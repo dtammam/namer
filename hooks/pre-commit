@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Load user tool paths (hooks run with a stripped environment)
+[ -f "$HOME/.profile" ] && . "$HOME/.profile"
+
+echo "=== pre-commit ==="
+
+# {{Adapt these to the project's tech stack}}
+# Example for a Rust project:
+# cargo fmt -- --check && cargo clippy -- -D warnings
+
+# Example for a TypeScript project:
+# cd web && npm run lint && npm run check
+
+# Example for a Python project:
+# ruff check . && mypy .
+
+echo "pre-commit checks passed"

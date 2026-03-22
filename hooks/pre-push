@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+[ -f "$HOME/.profile" ] && . "$HOME/.profile"
+
+echo "=== pre-push ==="
+
+# {{Adapt these to the project's tech stack}}
+# Example for a Rust project:
+# cargo test
+
+# Example for a TypeScript project:
+# cd web && npm run test
+
+echo "pre-push checks passed"
