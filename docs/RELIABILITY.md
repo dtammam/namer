@@ -2,16 +2,13 @@
 
 ## Performance budgets
 
-{{Fill in project-specific budgets. Examples:}}
-
-{{- Primary UI actions: < 16ms}}
-{{- API response time: < 200ms p95}}
-{{- Build time: < 30s}}
-{{- Test suite: < 60s}}
+- Build time: < 10s
+- Test suite: < 10s
+- No runtime dependencies beyond std, clap, rand
 
 ## Invariants
 
-{{Things that must never be violated, regardless of what a task requires.}}
+(None yet — to be defined as the project grows)
 
 ## When a budget is at risk
 

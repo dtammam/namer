@@ -20,4 +20,9 @@ These apply to every change, no exceptions.
 
 ## Coding standards
 
-{{Fill in project-specific rules: language config, lint rules, test requirements, etc.}}
+- Format: `cargo fmt -- --check` must pass
+- Lint: `cargo clippy -- -D warnings` must pass (zero warnings)
+- No `unsafe` blocks
+- No `unwrap()` in library code — use `Result` or `expect()` with context
+- All public functions and types have doc comments
+- Tests: `cargo test` must pass, every public behavior has a test

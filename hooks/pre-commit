@@ -6,14 +6,6 @@ set -euo pipefail
 
 echo "=== pre-commit ==="
 
-# {{Adapt these to the project's tech stack}}
-# Example for a Rust project:
-# cargo fmt -- --check && cargo clippy -- -D warnings
-
-# Example for a TypeScript project:
-# cd web && npm run lint && npm run check
-
-# Example for a Python project:
-# ruff check . && mypy .
+cargo fmt -- --check && cargo clippy -- -D warnings
 
 echo "pre-commit checks passed"

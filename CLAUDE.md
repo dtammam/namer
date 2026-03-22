@@ -54,28 +54,24 @@ For tech debt: `docs/exec-plans/tech-debt-tracker.md`
 ## Non-negotiables
 
 - Performance budgets in `docs/RELIABILITY.md` — flag regressions before proceeding
-- {{Add project-specific non-negotiables here}}
+- No runtime dependencies beyond std, clap, rand
 
 ## Coding standards
 
-These apply to every change, no exceptions:
-
-- {{List concrete, checkable rules here}}
-- {{Example: No `@ts-nocheck` — fix type errors, don't suppress them}}
-- {{Example: No silent catch blocks — every catch must log}}
+See `docs/CONTRIBUTING.md` for design principles and coding standards.
 
 ## Quality gates
 
-- `pre-commit`: {{describe checks}}
-- `pre-push`: {{describe checks}}
+- `pre-commit`: argo fmt -- --check && cargo clippy -- -D warnings
+- `pre-push`: cargo test
 - Never use `--no-verify`. Fix the root cause.
 
 ## Commands
 
 ```
-{{project install command}}
-{{project test command}}
-{{project lint command}}
+cargo build
+cargo test
+cargo clippy
 ```
 
 ## Active work

@@ -1,26 +1,26 @@
 # Architecture
 
-{{Fill in after project initialization. The principal-engineer agent will update
-this as designs are produced.}}
+The principal-engineer agent owns this file and updates it during Design.
 
 ## High-level design
 
-{{1-2 paragraphs describing the system}}
+- Clap for args
+- Rand for selection
+- Hardcoded word lists as const arrays
+- Single binary
 
 ## Repo layout
 
-```
-{{Tree diagram matching actual directories}}
-```
+(To be updated as the project takes shape)
 
 ## Component relationships
 
-{{How components interact}}
+(To be filled by principal-engineer during Design)
 
 ## Data model
 
-{{Core entities and relationships}}
+(To be filled by principal-engineer during Design)
 
 ## Key protocols / APIs
 
-{{External APIs, internal interfaces, communication patterns}}
+None. CLI only — stdin/stdout.
