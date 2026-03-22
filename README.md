@@ -1,0 +1,1 @@
+namer is a simple command-line utility for generating names.
