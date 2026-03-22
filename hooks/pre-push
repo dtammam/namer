@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+[ -f "$HOME/.profile" ] && . "$HOME/.profile"
+
+echo "=== pre-push ==="
+
+cargo test
+
+echo "pre-push checks passed"

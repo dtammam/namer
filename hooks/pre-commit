@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Load user tool paths (hooks run with a stripped environment)
+[ -f "$HOME/.profile" ] && . "$HOME/.profile"
+
+echo "=== pre-commit ==="
+
+cargo fmt -- --check && cargo clippy -- -D warnings
+
+echo "pre-commit checks passed"
