@@ -1,1 +1,45 @@
-{}
+{
+  "feature_id": "namer-mvp",
+  "feature_name": "Namer MVP - random adjective-noun pair CLI",
+  "stage": "done",
+  "created_at": "2026-03-22",
+  "updated_at": "2026-03-23",
+  "tasks": [],
+  "completed_tasks": [
+    {
+      "id": 1,
+      "title": "Add rand dependency to Cargo.toml",
+      "description": "Add rand = \"0.9\" under [dependencies] in Cargo.toml. Verify the project compiles with cargo build.",
+      "files": ["Cargo.toml"],
+      "status": "completed"
+    },
+    {
+      "id": 2,
+      "title": "Implement word lists, generate_name, and main in src/main.rs",
+      "description": "Replace the hello-world stub in src/main.rs with: (1) use rand::Rng import, (2) const ADJECTIVES array with 10+ lowercase entries, (3) const NOUNS array with 10+ lowercase entries, (4) pub fn generate_name(rng: &mut impl Rng) -> String with doc comment that picks random adjective and noun via rng.random_range() and returns them hyphen-separated, (5) fn main() that creates rand::rng(), calls generate_name, and prints via println!.",
+      "files": ["src/main.rs"],
+      "status": "completed"
+    },
+    {
+      "id": 3,
+      "title": "Add unit tests for generate_name",
+      "description": "Add #[cfg(test)] mod tests to src/main.rs with three tests using a deterministic seeded RNG: (1) test_generate_name_format, (2) test_generate_name_from_word_lists, (3) test_generate_name_deterministic. File stays under 50 lines.",
+      "files": ["src/main.rs"],
+      "status": "completed"
+    }
+  ],
+  "artifacts": {
+    "requirements": "docs/exec-plans/completed/2026-03-22-namer-mvp.md",
+    "design": "docs/exec-plans/completed/2026-03-22-namer-mvp.md",
+    "exec_plan": "docs/exec-plans/completed/2026-03-22-namer-mvp.md"
+  },
+  "history": [
+    { "timestamp": "2026-03-22 00:00", "stage": "bootstrap", "note": "Feature initiated" },
+    { "timestamp": "2026-03-22 00:00", "stage": "discovery", "note": "Requirements gathered by product-manager" },
+    { "timestamp": "2026-03-23 00:00", "stage": "design", "note": "Technical design completed by principal-engineer" },
+    { "timestamp": "2026-03-23 00:00", "stage": "tasks", "note": "Caught up state; moved to task breakdown" },
+    { "timestamp": "2026-03-23 00:00", "stage": "implementation", "note": "Task breakdown approved; starting implementation with Task 1" },
+    { "timestamp": "2026-03-23 00:00", "stage": "acceptance", "note": "All 3 tasks complete; build-specialist verified all checks pass" },
+    { "timestamp": "2026-03-23 00:00", "stage": "done", "note": "All 13 acceptance criteria passed; feature complete" }
+  ]
+}

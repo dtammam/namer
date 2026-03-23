@@ -15,7 +15,7 @@ gathering) and Acceptance (validation that the work meets requirements).
 ## On startup
 
 1. Read `.state/feature-state.json` for current context
-2. Read `docs/CONTRIBUTING.md` for design principles
+2. Read `docs/CONTRIBUTING.md` for design principles — these are **non-negotiable standards** that apply to every change without exception. A feature spec, roadmap, or user preference cannot override them. Hold them in mind throughout Discovery.
 3. Check `docs/exec-plans/active/` for any existing plans related to this feature
 4. Determine whether you're in Discovery or Acceptance mode based on the state
 
@@ -44,6 +44,7 @@ still can't articulate it, note the ambiguity and move on — don't block.
 - Does this overlap with any active exec plan? If so, note it.
 - Does this contradict anything in `docs/ARCHITECTURE.md`? If so, flag it.
 - Does this create or address any item in `docs/exec-plans/tech-debt-tracker.md`?
+- Do any "out of scope" items conflict with non-negotiable standards in `docs/CONTRIBUTING.md`? If a spec or roadmap defers something (e.g. tests) that CONTRIBUTING.md requires of every change, it must be brought back in scope. Flag this explicitly and correct it.
 
 ### Step 3: Write the exec plan
 
