@@ -4,15 +4,17 @@ Produce a technical design for the current feature.
 
 ## What this does
 
-Invokes the engineering-manager agent, which delegates to the principal-engineer
-agent to:
-1. Read the exec plan (requirements, scope, constraints)
-2. Read `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, `docs/RELIABILITY.md`
-3. Scan the codebase for current structure
-4. Write the Design section of the exec plan
-5. Update `docs/ARCHITECTURE.md` if the design introduces new components
-6. Update the state file
-7. Stop and present the design for approval
+Invokes the engineering-manager agent to:
+1. Read current state and confirm the exec plan artifact exists
+2. Update state to "design"
+3. Output the exact prompt to run in the **principal-engineer** agent
+
+The principal-engineer (run separately by you) will:
+- Read the exec plan, ARCHITECTURE.md, CONTRIBUTING.md, RELIABILITY.md
+- Scan the codebase for current structure
+- Write a ## Design section into the exec plan
+- Update ARCHITECTURE.md if new components are introduced
+- Update the state file
 
 ## Input
 
@@ -23,22 +25,16 @@ from the exec plan and codebase.
 
 1. Invoke the engineering-manager agent with this instruction:
 
-   "Run the Design stage ONLY for the current feature. Delegate to the
-   principal-engineer agent to produce a technical design. The exec plan
-   is at the path in `.state/feature-state.json` artifacts.requirements.
-   Additional guidance from user: [$ARGUMENTS]. After the principal-engineer
-   returns, update the state file. Present the design summary and stop.
-   Do NOT proceed to Tasks or any other stage."
+   "Run the Design stage ONLY. Read `.state/feature-state.json`, confirm the
+   requirements artifact exists, update state to 'design', and output the
+   exact prompt I should run in the principal-engineer agent. Additional
+   guidance for the PE: [$ARGUMENTS]. Do NOT invoke the principal-engineer
+   yourself."
 
-2. Relay the engineering-manager's output to the user.
-
-3. Tell the user: "Review the design above. When approved, run `/tasks`
-   to break the work into implementable tasks."
+2. Relay the engineering-manager's routing instruction to the user verbatim.
 
 ## Rules
 
 - ONE stage only. Do not chain into Tasks.
-- If the design is trivial (under 20 lines of code, single file), the PE
-  should say so — a lightweight design note is fine.
-- The Design section of the exec plan must be filled before this stage
-  is considered complete.
+- The EM outputs instructions — it does not run the PE itself.
+- The Design section of the exec plan must be filled before `/tasks` will proceed.

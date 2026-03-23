@@ -4,19 +4,18 @@ Implement the next incomplete task from the task breakdown.
 
 ## What this does
 
-Invokes the engineering-manager agent, which delegates to the software-developer
-agent to:
-1. Read `.state/feature-state.json` to find the next incomplete task
-2. Read the exec plan (design section) for technical direction
-3. Read `docs/CONTRIBUTING.md` for coding standards
-4. Implement the code and tests for that ONE task
-5. Run quality checks (fmt, clippy, test)
-6. Report completion with a summary of changes
+Invokes the engineering-manager agent to:
+1. Read current state and identify the next incomplete task
+2. Update state to "implementation"
+3. Output the exact prompt to run in the **software-developer** agent
 
-The engineering-manager then:
-1. Updates the state file (moves task to completed_tasks)
-2. Presents results to the user
-3. Stops
+The software-developer (run separately by you) will:
+- Read the task description from the state file
+- Read the exec plan design section for technical direction
+- Read `docs/CONTRIBUTING.md` for coding standards
+- Implement code and tests for that ONE task
+- Run quality checks (fmt, clippy, test) and fix failures
+- Report files changed and tests added
 
 ## Input
 
@@ -28,22 +27,15 @@ incomplete task in order.
 
 1. Invoke the engineering-manager agent with this instruction:
 
-   "Run the Implementation stage for ONE task only. Pick the next
-   incomplete task from the state file (or the user-specified task:
-   [$ARGUMENTS]). Delegate to the software-developer agent to implement
-   it. After the software-developer returns, update the state file.
-   Present the implementation summary and stop. Do NOT proceed to
-   the next task, Verification, or any other stage."
+   "Run the Implementation stage for ONE task only. Read `.state/feature-state.json`
+   to identify the next incomplete task (or user-specified task: [$ARGUMENTS]).
+   Output the exact prompt I should run in the software-developer agent to
+   implement it. Do NOT invoke the software-developer yourself."
 
-2. Relay the engineering-manager's output to the user.
-
-3. Tell the user: "Run `/verify` to run the build and test suite against
-   this change."
+2. Relay the engineering-manager's routing instruction to the user verbatim.
 
 ## Rules
 
-- ONE task per invocation. Not two, not all remaining.
-- The software-developer writes code. The EM does not.
-- If the software-developer reports a failure after 3 AutoSDE iterations,
-  surface the failure to the user — do not retry indefinitely.
-- If all tasks are already complete, tell the user to run `/accept` instead.
+- ONE task per invocation.
+- The EM outputs instructions — it does not run the SDE itself.
+- If all tasks are already complete, the EM should tell the user to run `/accept`.

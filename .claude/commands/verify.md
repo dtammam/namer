@@ -4,19 +4,16 @@ Run the build and test suite to verify the latest implementation.
 
 ## What this does
 
-Invokes the engineering-manager agent, which delegates to the build-specialist
-agent to:
-1. Run `cargo build`
-2. Run `cargo test`
-3. Run `cargo fmt -- --check`
-4. Run `cargo clippy -- -D warnings`
-5. Report pass/fail for each
+Invokes the engineering-manager agent to:
+1. Read current state
+2. Output the exact prompt to run in the **build-specialist** agent
 
-The engineering-manager then:
-1. Presents the build report to the user
-2. If all pass and more tasks remain: suggests running `/implement` next
-3. If all pass and no tasks remain: suggests running `/accept` next
-4. If any fail: presents the failures for the user to decide next steps
+The build-specialist (run separately by you) will:
+- Run `cargo build`
+- Run `cargo test`
+- Run `cargo fmt -- --check`
+- Run `cargo clippy -- -D warnings`
+- Report pass/fail for each with full output on failures
 
 ## Input
 
@@ -26,17 +23,15 @@ $ARGUMENTS is not typically needed. Can include "verbose" for full output.
 
 1. Invoke the engineering-manager agent with this instruction:
 
-   "Run Verification ONLY. Delegate to the build-specialist agent to run
-   the full build and test suite. Present the results and stop. If
-   everything passes and more tasks remain, tell the user to run
-   `/implement` for the next task. If everything passes and all tasks
-   are done, tell the user to run `/accept`. Do NOT proceed to any
-   other stage automatically."
+   "Run the Verification stage ONLY. Read `.state/feature-state.json` and
+   output the exact prompt I should run in the build-specialist agent to
+   verify the build. Do NOT invoke the build-specialist yourself."
 
-2. Relay the engineering-manager's output to the user.
+2. Relay the engineering-manager's routing instruction to the user verbatim.
 
 ## Rules
 
-- The build-specialist does NOT fix code. It only reports.
-- If tests fail, the user decides whether to run `/implement` again to
-  fix the issue or handle it manually.
+- The build-specialist reports only — it does not fix code.
+- If tests fail, run `/implement` to fix or handle manually.
+- If all pass and tasks remain: run `/implement` for the next task.
+- If all pass and no tasks remain: run `/accept`.

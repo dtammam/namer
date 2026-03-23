@@ -4,16 +4,16 @@ Validate that the implementation meets all acceptance criteria.
 
 ## What this does
 
-Invokes the engineering-manager agent, which delegates to the product-manager
-agent to:
-1. Read the exec plan's acceptance criteria
-2. Verify each criterion against the current code and test results
-3. Report pass/fail for each criterion
+Invokes the engineering-manager agent to:
+1. Read current state and confirm all tasks are complete
+2. Update state to "acceptance"
+3. Output the exact prompt to run in the **product-manager** agent
 
-The engineering-manager then:
-1. Presents the acceptance report to the user
-2. If all pass: suggests running `/done` to close out
-3. If any fail: presents failures for the user to decide (fix or defer)
+The product-manager (run separately by you) will:
+- Read the exec plan's acceptance criteria
+- Verify each criterion against the current code and test results
+- Report explicit pass/fail for every criterion — "looks good" is not acceptance
+- Not implement fixes — report only
 
 ## Input
 
@@ -23,17 +23,17 @@ $ARGUMENTS is not typically needed.
 
 1. Invoke the engineering-manager agent with this instruction:
 
-   "Run the Acceptance stage ONLY. Delegate to the product-manager agent
-   to validate all acceptance criteria from the exec plan. Present the
-   pass/fail report and stop. If all criteria pass, tell the user to run
-   `/done`. If any fail, present the failures and let the user decide.
-   Do NOT mark the feature as done automatically."
+   "Run the Acceptance stage ONLY. Read `.state/feature-state.json`, confirm
+   all tasks are in completed_tasks, update state to 'acceptance', and output
+   the exact prompt I should run in the product-manager agent to validate
+   acceptance criteria. Do NOT invoke the product-manager yourself."
 
-2. Relay the engineering-manager's output to the user.
+2. Relay the engineering-manager's routing instruction to the user verbatim.
 
 ## Rules
 
-- The product-manager verifies — it does not implement fixes.
-- If criteria fail, the user may run `/implement` to fix, or defer
-  the failure to tech debt.
-- All criteria must be explicitly checked. "Looks good" is not acceptance.
+- All tasks must be complete before running acceptance.
+- The PM verifies — it does not implement fixes.
+- If criteria fail, run `/implement` to fix or defer to tech debt.
+- All criteria must be explicitly checked.
+- If all pass, run `/done`.
