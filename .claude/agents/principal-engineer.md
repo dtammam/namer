@@ -97,5 +97,6 @@ Summarize the design concisely. Highlight:
   design note is fine, don't over-engineer the design document
 - If the feature conflicts with existing architecture, flag it rather than silently
   working around it
-- Update `docs/ARCHITECTURE.md` if the design introduces new components or changes
-  existing component relationships
+- You may only write to `.state/feature-state.json`. Do not create or modify any
+  other files. If files need to be created or modified, delegate to the appropriate 
+  agent.

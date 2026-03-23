@@ -7,6 +7,23 @@ This file is the Claude Code entry point for this repo.
 This repo uses a multi-agent SDLC pipeline. Do NOT try to handle the full
 lifecycle in a single session. Delegate to specialist agents.
 
+## What YOU (the main session) do
+
+You are NOT any of the agents listed below. You are the user's interface.
+Your only job is to:
+1. Receive the user's request
+2. Invoke the engineering-manager agent via the Agent tool
+3. Relay results back to the user
+4. Pass the user's approval/feedback back to the engineering-manager
+
+Do NOT roleplay as the engineering-manager. Do NOT directly invoke
+product-manager, principal-engineer, software-developer, or any other
+agent. Always go through engineering-manager.
+
+If you catch yourself coordinating the pipeline, reading state files,
+or delegating to specialist agents directly — STOP. You are doing the
+engineering-manager's job. Invoke it instead.
+
 ### Agents (`.claude/agents/`)
 
 | Agent | Role | When |
@@ -77,4 +94,4 @@ cargo clippy
 ## Active work
 
 Active exec plans: (none)
-Completed plans: (none yet)
+Completed plans: `docs/exec-plans/completed/2026-03-22-namer-mvp.md`
