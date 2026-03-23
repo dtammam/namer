@@ -2,59 +2,75 @@
 
 This file is the Claude Code entry point for this repo.
 
-## Agent architecture
-
-This repo uses a multi-agent SDLC pipeline. Do NOT try to handle the full
-lifecycle in a single session. Delegate to specialist agents.
-
 ## What YOU (the main session) do
 
 You are NOT any of the agents listed below. You are the user's interface.
 Your only job is to:
 1. Receive the user's request
 2. Invoke the engineering-manager agent via the Agent tool
-3. Relay results back to the user
-4. Pass the user's approval/feedback back to the engineering-manager
+3. Relay the engineering-manager's output — including its routing instructions — verbatim to the user
 
 Do NOT roleplay as the engineering-manager. Do NOT directly invoke
 product-manager, principal-engineer, software-developer, or any other
 agent. Always go through engineering-manager.
 
 If you catch yourself coordinating the pipeline, reading state files,
-or delegating to specialist agents directly — STOP. You are doing the
-engineering-manager's job. Invoke it instead.
+or delegating to specialist agents directly — STOP. Invoke the EM instead.
+
+## Agent architecture
+
+The engineering-manager is an **advisor and state manager**, not a delegator.
+It tells the user which specialist agent to switch to and provides an exact,
+copy-pasteable prompt. The user runs each specialist in a separate Claude Code
+session (separate terminal tab). This keeps every agent's output directly
+visible to the user — no intermediary summaries.
 
 ### Agents (`.claude/agents/`)
 
-| Agent | Role | When |
-|-------|------|------|
-| `engineering-manager` | Orchestrator | Any feature/bug/refactor — start here |
-| `product-manager` | Requirements & acceptance | Discovery and Acceptance stages |
-| `principal-engineer` | Technical design | Design stage |
-| `software-developer` | Implementation | Implementation stage (per task) |
-| `build-specialist` | Build & test runner | After each implementation task |
-| `quality-assurance` | Code review | Optional, before acceptance |
+| Agent | Role | Invoked by |
+|-------|------|------------|
+| `engineering-manager` | State manager + router | Main session (via SOP commands) |
+| `product-manager` | Requirements & acceptance | User directly, per EM instructions |
+| `principal-engineer` | Technical design | User directly, per EM instructions |
+| `software-developer` | Implementation | User directly, per EM instructions |
+| `build-specialist` | Build & test runner | User directly, per EM instructions |
+| `quality-assurance` | Code review | User directly, optional |
+
+### SOP commands (`.claude/commands/`)
+
+Each command invokes the engineering-manager. The EM reads state, updates it,
+and outputs a routing instruction: which agent tab to switch to and what prompt
+to paste. The user then runs that agent directly.
+
+| Command | EM does | You then do |
+|---------|---------|-------------|
+| `/kickoff` | Initializes state, summarizes context | Approve, then `/discover` |
+| `/discover` | Outputs PM prompt | Switch to `product-manager`, paste prompt |
+| `/design` | Outputs PE prompt | Switch to `principal-engineer`, paste prompt |
+| `/tasks` | Breaks work into tasks, writes state | Approve, then `/implement` |
+| `/implement` | Outputs SDE prompt | Switch to `software-developer`, paste prompt |
+| `/verify` | Outputs build-specialist prompt | Switch to `build-specialist`, paste prompt |
+| `/accept` | Outputs PM prompt | Switch to `product-manager`, paste prompt |
+| `/done` | Archives plan, closes feature | Commit via `/commit-and-push` |
+| `/commit-only` | — | Stages and commits |
+| `/commit-and-push` | — | Stages, commits, pushes |
 
 ### Shared state
 
-`.state/feature-state.json` tracks the current feature lifecycle. Every agent
-reads it on startup and the engineering-manager updates it at transitions.
+`.state/feature-state.json` tracks the current feature lifecycle. The
+engineering-manager reads and updates it at every stage transition.
 
 ### Workflow
 
 ```
-User describes work
-  → engineering-manager activates
-    → product-manager (Discovery)
-    → principal-engineer (Design)
-    → engineering-manager (Task breakdown)
-    → software-developer (Implementation, per task)
-    → build-specialist (Verify, per task)
-    → product-manager (Acceptance)
-  → Done
+/kickoff → /discover → /design → /tasks → /implement → /verify → /accept → /done
+                                              ↑            |
+                                              └── (next) ──┘
 ```
 
 Every stage transition requires explicit user approval. No auto-progression.
+The user runs each command manually. The engineering-manager runs ONE stage
+per invocation and stops.
 
 ## Reference docs
 
@@ -79,7 +95,7 @@ See `docs/CONTRIBUTING.md` for design principles and coding standards.
 
 ## Quality gates
 
-- `pre-commit`: argo fmt -- --check && cargo clippy -- -D warnings
+- `pre-commit`: cargo fmt -- --check && cargo clippy -- -D warnings
 - `pre-push`: cargo test
 - Never use `--no-verify`. Fix the root cause.
 
@@ -94,4 +110,4 @@ cargo clippy
 ## Active work
 
 Active exec plans: (none)
-Completed plans: `docs/exec-plans/completed/2026-03-22-namer-mvp.md`
+Completed plans: `docs/exec-plans/completed/2026-03-22-namer-mvp.md`, `docs/exec-plans/completed/2026-03-23-output-formatting-flags.md`
