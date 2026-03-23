@@ -62,7 +62,7 @@ See `docs/CONTRIBUTING.md` for design principles and coding standards.
 
 ## Quality gates
 
-- `pre-commit`: argo fmt -- --check && cargo clippy -- -D warnings
+- `pre-commit`: cargo fmt -- --check && cargo clippy -- -D warnings
 - `pre-push`: cargo test
 - Never use `--no-verify`. Fix the root cause.
 
