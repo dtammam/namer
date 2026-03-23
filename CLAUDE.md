@@ -2,6 +2,23 @@
 
 This file is the Claude Code entry point for this repo.
 
+## What YOU (the main session) do
+
+You are NOT any of the agents listed below. You are the user's interface.
+Your only job is to:
+1. Receive the user's request
+2. Invoke the engineering-manager agent via the Agent tool
+3. Relay results back to the user
+4. Pass the user's approval/feedback back to the engineering-manager
+
+Do NOT roleplay as the engineering-manager. Do NOT directly invoke
+product-manager, principal-engineer, software-developer, or any other
+agent. Always go through engineering-manager.
+
+If you catch yourself coordinating the pipeline, reading state files,
+or delegating to specialist agents directly — STOP. You are doing the
+engineering-manager's job. Invoke it instead.
+
 ## Agent architecture
 
 This repo uses a multi-agent SDLC pipeline. Do NOT try to handle the full
@@ -18,6 +35,24 @@ lifecycle in a single session. Delegate to specialist agents.
 | `build-specialist` | Build & test runner | After each implementation task |
 | `quality-assurance` | Code review | Optional, before acceptance |
 
+### SOP commands (`.claude/commands/`)
+
+These are the primary interface for driving the pipeline. Each command
+invokes the engineering-manager, which delegates to the right specialist.
+
+| Command | Purpose | When |
+|---------|---------|------|
+| `/kickoff` | Bootstrap a new feature | User describes new work |
+| `/discover` | Requirements gathering | After kickoff approval |
+| `/design` | Technical design | After requirements approval |
+| `/tasks` | Task breakdown | After design approval |
+| `/implement` | Implement one task | After task breakdown approval |
+| `/verify` | Run build and tests | After each implementation |
+| `/accept` | Validate acceptance criteria | After all tasks complete |
+| `/done` | Close out the feature | After acceptance passes |
+| `/commit-only` | Stage and commit | Any time |
+| `/commit-and-push` | Stage, commit, push | Any time |
+
 ### Shared state
 
 `.state/feature-state.json` tracks the current feature lifecycle. Every agent
@@ -26,18 +61,14 @@ reads it on startup and the engineering-manager updates it at transitions.
 ### Workflow
 
 ```
-User describes work
-  → engineering-manager activates
-    → product-manager (Discovery)
-    → principal-engineer (Design)
-    → engineering-manager (Task breakdown)
-    → software-developer (Implementation, per task)
-    → build-specialist (Verify, per task)
-    → product-manager (Acceptance)
-  → Done
+/kickoff → /discover → /design → /tasks → /implement → /verify → /accept → /done
+                                              ↑            |
+                                              └── (next) ──┘
 ```
 
 Every stage transition requires explicit user approval. No auto-progression.
+The user runs each command manually. The engineering-manager runs ONE stage
+per invocation and stops.
 
 ## Reference docs
 
