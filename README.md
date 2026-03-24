@@ -2,7 +2,6 @@
 
 > Generate a random, memorable name in an instant — ALL CAPS by default, configurable to your needs.
 
-<!-- Icon pending: drop logo-256.png into assets/logo/ to display the project logo -->
 <p align="center">
   <img src="assets/logo/logo-256.png" alt="namer logo" width="128">
 </p>
@@ -12,9 +11,11 @@
 
 ## What is namer?
 
-namer is a command-line tool that generates random two-word names by combining an adjective with a noun. Output is ALL CAPS with no separator by default — ideal for project names, environment identifiers, or any context where you need a quick, human-readable handle. Both the casing and the separator between words are configurable via flags.
+namer is a command-line tool that generates random two-word names by combining an adjective with a noun. By default, output is ALL CAPS with no separator — great for project names, environment identifiers, or anywhere you need a quick, human-readable handle. You can configure both the casing and the separator between words using flags.
 
 ## Installation
+
+Download the latest binary for your platform and make it executable — no dependencies required.
 
 ### macOS (Apple Silicon)
 
@@ -49,6 +50,8 @@ Invoke-WebRequest -Uri https://github.com/dtammam/namer/releases/latest/download
 
 ### Build from source
 
+Choose this path if you want the latest unreleased code or plan to contribute to the project.
+
 Requires [Rust stable](https://rustup.rs).
 
 ```sh
@@ -59,6 +62,8 @@ cargo build --release
 ```
 
 ## Usage
+
+The examples below cover every flag namer supports — start with the simplest invocation and combine flags as needed.
 
 **Plain invocation** — ALL CAPS, no separator:
 
@@ -111,25 +116,27 @@ Options:
 
 ## Development
 
-Build the project:
+After cloning the repo, here is how to build, test, and lint locally.
+
+**Build** — compile an optimized binary; run this when verifying performance or preparing a release:
 
 ```sh
 cargo build --release
 ```
 
-Run the test suite:
+**Test** — run the full test suite; do this before opening a pull request to catch regressions:
 
 ```sh
 cargo test
 ```
 
-Run the linter:
+**Lint** — run Clippy with warnings as errors; fix any issues it flags before committing:
 
 ```sh
 cargo clippy -- -D warnings
 ```
 
-Check formatting:
+**Format check** — verify code is formatted consistently; the CI gate requires this to pass:
 
 ```sh
 cargo fmt -- --check
@@ -137,7 +144,7 @@ cargo fmt -- --check
 
 ## Contributing
 
-See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for design principles and coding standards. All contributions must pass `cargo fmt -- --check`, `cargo clippy -- -D warnings`, and `cargo test` before merging.
+Contributions are welcome! Read [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for design principles and coding standards. Before opening a pull request, make sure `cargo fmt -- --check`, `cargo clippy -- -D warnings`, and `cargo test` all pass.
 
 ## License
 
