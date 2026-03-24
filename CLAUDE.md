@@ -110,4 +110,4 @@ cargo clippy
 ## Active work
 
 Active exec plans: (none)
-Completed plans: `docs/exec-plans/completed/2026-03-22-namer-mvp.md`, `docs/exec-plans/completed/2026-03-23-output-formatting-flags.md`
+Completed plans: `docs/exec-plans/completed/2026-03-22-namer-mvp.md`, `docs/exec-plans/completed/2026-03-23-output-formatting-flags.md`, `docs/exec-plans/completed/2026-03-23-release-ci-branding-readme.md`
