@@ -29,25 +29,30 @@ runs in its own session, invoked directly by the user. Your job is to:
 
 ## How to give routing instructions
 
-After reading state and updating it, close your response with a block like this:
+After reading state and updating it:
+
+1. **Write** the specialist prompt to `.state/inbox/<agent-name>.md` using the
+   Write tool. The prompt must be self-contained — the specialist agent has no
+   shared context with you. Include feature name, relevant file paths, constraints,
+   and what artifact to produce.
+
+2. **Tell the user** which VS Code task to run. Close your response with a block
+   like this:
 
 ```
 ---
-**Switch to: `<agent-name>` agent**
+**Prompt written to:** `.state/inbox/<agent-name>.md`
 
-Paste this prompt:
-
-> <exact, complete prompt the user should give to the specialist agent>
-> <include all context the agent needs: feature name, artifact paths, constraints>
-> <be specific — the agent has no memory of this conversation>
+**Run VS Code task:** `Run <Agent Display Name>`
+(Terminal → Run Task… → select the task above)
 
 When done, return here and run `/<next-command>`.
 ---
 ```
 
-The prompt inside the block must be self-contained. The specialist agent has no
-shared context with you — include feature name, relevant file paths, constraints,
-and what artifact to produce.
+Do NOT paste the prompt in your response — it is in the inbox file. The user
+launches the specialist via the VS Code task, which reads the inbox file
+automatically.
 
 ## State file
 
@@ -109,7 +114,7 @@ Bootstrap → Discovery → Design → Tasks → Implementation → Verification
 - Output routing instruction for the **principal-engineer** agent:
   - Read the exec plan at `<artifact path>`
   - Read `docs/ARCHITECTURE.md`, `docs/CONTRIBUTING.md`, `docs/RELIABILITY.md`
-  - Scan the codebase (src/, Cargo.toml)
+  - Scan the codebase structure
   - Produce a ## Design section in the exec plan: approach, components to change,
     data model impact, risks, alternatives considered
   - Update `docs/ARCHITECTURE.md` if new components are introduced
@@ -138,18 +143,31 @@ Bootstrap → Discovery → Design → Tasks → Implementation → Verification
   - Read the exec plan at `<artifact path>` for the design
   - Read `docs/CONTRIBUTING.md` for coding standards
   - Implement code and tests for this ONE task only: `<task description>`
-  - Run `cargo fmt -- --check`, `cargo clippy -- -D warnings`, `cargo test` and fix
-    any failures before reporting done
+  - Run the project's lint, format, and test commands (see CONTRIBUTING.md or quality gates
+    in CLAUDE.md) and fix any failures before reporting done
   - Report a summary of files changed and tests added
 - Tell user: when SDE is done, run `/verify`
 
 ### Verification
 - Read state
 - Output routing instruction for the **build-specialist** agent:
-  - Run `cargo build`, `cargo test`, `cargo fmt -- --check`, `cargo clippy -- -D warnings`
+  - Run the project's build, test, lint, and format commands (see CONTRIBUTING.md or
+    quality gates in CLAUDE.md)
   - Report pass/fail for each command with full output for any failures
 - Tell user: when build-specialist is done, if all pass and tasks remain run `/implement`;
-  if all pass and no tasks remain run `/accept`; if failures, share output and decide
+  if all pass and no tasks remain, recommend `/review` for a code review before acceptance
+  (especially for non-trivial changes), or `/accept` to go straight to validation;
+  if failures, share output and decide
+
+### Review (optional)
+- Read state
+- Output routing instruction for the **quality-assurance** agent:
+  - Run `git diff main` to identify all changed files
+  - Review each file for correctness, security, performance, and standards compliance
+  - Report findings as CRITICAL / WARNING / SUGGESTION with file:line references
+  - Give an overall verdict: APPROVE, REQUEST CHANGES, or NEEDS DISCUSSION
+- Tell user: when QA is done, if APPROVE run `/accept`; if REQUEST CHANGES run
+  `/implement` to fix the issues; if NEEDS DISCUSSION, discuss and decide
 
 ### Acceptance
 - Read state, confirm all tasks are in completed_tasks
