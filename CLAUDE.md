@@ -20,45 +20,56 @@ or delegating to specialist agents directly — STOP. Invoke the EM instead.
 ## Agent architecture
 
 The engineering-manager is an **advisor and state manager**, not a delegator.
-It tells the user which specialist agent to switch to and provides an exact,
-copy-pasteable prompt. The user runs each specialist in a separate Claude Code
-session (separate terminal tab). This keeps every agent's output directly
-visible to the user — no intermediary summaries.
+It writes the specialist prompt to `.state/inbox/<agent-name>.md` and tells the
+user which VS Code task to run. The user launches each specialist via
+**Terminal → Run Task…** in VS Code, which spawns a fresh Claude Code session
+that reads the inbox file automatically. This keeps every agent's output directly
+visible to the user — no intermediary summaries, no copy-paste.
 
 ### Agents (`.claude/agents/`)
 
 | Agent | Role | Invoked by |
 |-------|------|------------|
 | `engineering-manager` | State manager + router | Main session (via SOP commands) |
-| `product-manager` | Requirements & acceptance | User directly, per EM instructions |
-| `principal-engineer` | Technical design | User directly, per EM instructions |
-| `software-developer` | Implementation | User directly, per EM instructions |
-| `build-specialist` | Build & test runner | User directly, per EM instructions |
-| `quality-assurance` | Code review | User directly, optional |
+| `product-manager` | Requirements & acceptance | VS Code task "Run Product Manager" |
+| `principal-engineer` | Technical design | VS Code task "Run Principal Engineer" |
+| `software-developer` | Implementation | VS Code task "Run Software Developer" |
+| `build-specialist` | Build & test runner | VS Code task "Run Build Specialist" |
+| `quality-assurance` | Code review | VS Code task "Run Quality Assurance" |
 
 ### SOP commands (`.claude/commands/`)
 
 Each command invokes the engineering-manager. The EM reads state, updates it,
-and outputs a routing instruction: which agent tab to switch to and what prompt
-to paste. The user then runs that agent directly.
+writes the specialist prompt to `.state/inbox/<agent-name>.md`, and tells the
+user which VS Code task to run. The user launches the task via
+**Terminal → Run Task…**.
 
 | Command | EM does | You then do |
 |---------|---------|-------------|
 | `/kickoff` | Initializes state, summarizes context | Approve, then `/discover` |
-| `/discover` | Outputs PM prompt | Switch to `product-manager`, paste prompt |
-| `/design` | Outputs PE prompt | Switch to `principal-engineer`, paste prompt |
+| `/discover` | Writes PM prompt to inbox | Run VS Code task "Run Product Manager" |
+| `/design` | Writes PE prompt to inbox | Run VS Code task "Run Principal Engineer" |
 | `/tasks` | Breaks work into tasks, writes state | Approve, then `/implement` |
-| `/implement` | Outputs SDE prompt | Switch to `software-developer`, paste prompt |
-| `/verify` | Outputs build-specialist prompt | Switch to `build-specialist`, paste prompt |
-| `/accept` | Outputs PM prompt | Switch to `product-manager`, paste prompt |
+| `/implement` | Writes SDE prompt to inbox | Run VS Code task "Run Software Developer" |
+| `/verify` | Writes build-specialist prompt to inbox | Run VS Code task "Run Build Specialist" |
+| `/accept` | Writes PM prompt to inbox | Run VS Code task "Run Product Manager" |
 | `/done` | Archives plan, closes feature | Commit via `/commit-and-push` |
 | `/commit-only` | — | Stages and commits |
 | `/commit-and-push` | — | Stages, commits, pushes |
+
+### VS Code tasks (`.vscode/tasks.json`)
+
+Each specialist agent has a corresponding VS Code task that spawns a fresh
+Claude Code session reading from `.state/inbox/<agent-name>.md`. Run via
+**Terminal → Run Task…** in VS Code.
 
 ### Shared state
 
 `.state/feature-state.json` tracks the current feature lifecycle. The
 engineering-manager reads and updates it at every stage transition.
+
+`.state/inbox/` holds ephemeral prompt files written by the EM for specialist
+agents. These are `.gitignore`d — only `.gitkeep` is tracked.
 
 ### Workflow
 

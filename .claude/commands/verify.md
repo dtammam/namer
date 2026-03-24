@@ -6,7 +6,7 @@ Run the build and test suite to verify the latest implementation.
 
 Invokes the engineering-manager agent to:
 1. Read current state
-2. Output the exact prompt to run in the **build-specialist** agent
+2. Write the exact prompt for the **build-specialist** agent to `.state/inbox/build-specialist.md`
 
 The build-specialist (run separately by you) will:
 - Run `cargo build`
@@ -24,10 +24,12 @@ $ARGUMENTS is not typically needed. Can include "verbose" for full output.
 1. Invoke the engineering-manager agent with this instruction:
 
    "Run the Verification stage ONLY. Read `.state/feature-state.json` and
-   output the exact prompt I should run in the build-specialist agent to
-   verify the build. Do NOT invoke the build-specialist yourself."
+   write the exact prompt for the build-specialist agent to
+   `.state/inbox/build-specialist.md` so I can run it via the VS Code task.
+   Do NOT invoke the build-specialist yourself."
 
 2. Relay the engineering-manager's routing instruction to the user verbatim.
+   The EM will tell the user which VS Code task to run.
 
 ## Rules
 

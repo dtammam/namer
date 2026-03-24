@@ -7,7 +7,7 @@ Produce a technical design for the current feature.
 Invokes the engineering-manager agent to:
 1. Read current state and confirm the exec plan artifact exists
 2. Update state to "design"
-3. Output the exact prompt to run in the **principal-engineer** agent
+3. Write the exact prompt for the **principal-engineer** agent to `.state/inbox/principal-engineer.md`
 
 The principal-engineer (run separately by you) will:
 - Read the exec plan, ARCHITECTURE.md, CONTRIBUTING.md, RELIABILITY.md
@@ -26,12 +26,13 @@ from the exec plan and codebase.
 1. Invoke the engineering-manager agent with this instruction:
 
    "Run the Design stage ONLY. Read `.state/feature-state.json`, confirm the
-   requirements artifact exists, update state to 'design', and output the
-   exact prompt I should run in the principal-engineer agent. Additional
-   guidance for the PE: [$ARGUMENTS]. Do NOT invoke the principal-engineer
-   yourself."
+   requirements artifact exists, update state to 'design', and write the exact
+   prompt for the principal-engineer agent to `.state/inbox/principal-engineer.md`
+   so I can run it via the VS Code task. Additional guidance for the PE:
+   [$ARGUMENTS]. Do NOT invoke the principal-engineer yourself."
 
 2. Relay the engineering-manager's routing instruction to the user verbatim.
+   The EM will tell the user which VS Code task to run.
 
 ## Rules
 

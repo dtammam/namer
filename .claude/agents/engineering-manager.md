@@ -29,25 +29,30 @@ runs in its own session, invoked directly by the user. Your job is to:
 
 ## How to give routing instructions
 
-After reading state and updating it, close your response with a block like this:
+After reading state and updating it:
+
+1. **Write** the specialist prompt to `.state/inbox/<agent-name>.md` using the
+   Write tool. The prompt must be self-contained — the specialist agent has no
+   shared context with you. Include feature name, relevant file paths, constraints,
+   and what artifact to produce.
+
+2. **Tell the user** which VS Code task to run. Close your response with a block
+   like this:
 
 ```
 ---
-**Switch to: `<agent-name>` agent**
+**Prompt written to:** `.state/inbox/<agent-name>.md`
 
-Paste this prompt:
-
-> <exact, complete prompt the user should give to the specialist agent>
-> <include all context the agent needs: feature name, artifact paths, constraints>
-> <be specific — the agent has no memory of this conversation>
+**Run VS Code task:** `Run <Agent Display Name>`
+(Terminal → Run Task… → select the task above)
 
 When done, return here and run `/<next-command>`.
 ---
 ```
 
-The prompt inside the block must be self-contained. The specialist agent has no
-shared context with you — include feature name, relevant file paths, constraints,
-and what artifact to produce.
+Do NOT paste the prompt in your response — it is in the inbox file. The user
+launches the specialist via the VS Code task, which reads the inbox file
+automatically.
 
 ## State file
 

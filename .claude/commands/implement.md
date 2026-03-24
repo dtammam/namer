@@ -7,7 +7,7 @@ Implement the next incomplete task from the task breakdown.
 Invokes the engineering-manager agent to:
 1. Read current state and identify the next incomplete task
 2. Update state to "implementation"
-3. Output the exact prompt to run in the **software-developer** agent
+3. Write the exact prompt for the **software-developer** agent to `.state/inbox/software-developer.md`
 
 The software-developer (run separately by you) will:
 - Read the task description from the state file
@@ -29,10 +29,12 @@ incomplete task in order.
 
    "Run the Implementation stage for ONE task only. Read `.state/feature-state.json`
    to identify the next incomplete task (or user-specified task: [$ARGUMENTS]).
-   Output the exact prompt I should run in the software-developer agent to
-   implement it. Do NOT invoke the software-developer yourself."
+   Write the exact prompt for the software-developer agent to
+   `.state/inbox/software-developer.md` so I can run it via the VS Code task.
+   Do NOT invoke the software-developer yourself."
 
 2. Relay the engineering-manager's routing instruction to the user verbatim.
+   The EM will tell the user which VS Code task to run.
 
 ## Rules
 

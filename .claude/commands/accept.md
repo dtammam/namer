@@ -7,7 +7,7 @@ Validate that the implementation meets all acceptance criteria.
 Invokes the engineering-manager agent to:
 1. Read current state and confirm all tasks are complete
 2. Update state to "acceptance"
-3. Output the exact prompt to run in the **product-manager** agent
+3. Write the exact prompt for the **product-manager** agent to `.state/inbox/product-manager.md`
 
 The product-manager (run separately by you) will:
 - Read the exec plan's acceptance criteria
@@ -24,11 +24,13 @@ $ARGUMENTS is not typically needed.
 1. Invoke the engineering-manager agent with this instruction:
 
    "Run the Acceptance stage ONLY. Read `.state/feature-state.json`, confirm
-   all tasks are in completed_tasks, update state to 'acceptance', and output
-   the exact prompt I should run in the product-manager agent to validate
-   acceptance criteria. Do NOT invoke the product-manager yourself."
+   all tasks are in completed_tasks, update state to 'acceptance', and write
+   the exact prompt for the product-manager agent to
+   `.state/inbox/product-manager.md` so I can run it via the VS Code task.
+   Do NOT invoke the product-manager yourself."
 
 2. Relay the engineering-manager's routing instruction to the user verbatim.
+   The EM will tell the user which VS Code task to run.
 
 ## Rules
 
