@@ -13,14 +13,20 @@ The principal-engineer agent owns this file and updates it during Design.
 
 ```
 src/
-  main.rs          — CLI entry point, word lists, name generation, formatting, tests
-Cargo.toml         — dependencies: clap (derive), rand
+  main.rs              — CLI entry point, word lists, name generation, formatting, tests
+Cargo.toml             — dependencies: clap (derive), rand
 docs/
-  ARCHITECTURE.md  — this file
-  CONTRIBUTING.md  — design principles and coding standards
-  RELIABILITY.md   — performance budgets and invariants
-  exec-plans/      — feature execution plans
-.state/            — feature lifecycle state (managed by engineering-manager)
+  ARCHITECTURE.md      — this file
+  CONTRIBUTING.md      — design principles and coding standards
+  RELIABILITY.md       — performance budgets and invariants
+  exec-plans/          — feature execution plans
+.github/
+  workflows/
+    ci.yml             — PR gate: fmt, clippy, test
+    release.yml        — Tag-triggered cross-platform release builds
+assets/
+  logo/                — App icon/logo files (PNG, optional SVG)
+.state/                — feature lifecycle state (managed by engineering-manager)
 ```
 
 ## Component relationships
@@ -44,6 +50,11 @@ main()
 - **Word lists**: `ADJECTIVES` and `NOUNS` are `&[&str]` const arrays of lowercase English words.
 - **`Cli` struct**: Clap-derived struct with fields `lower: bool` and `delimiter: Option<String>`.
 - **Name generation output**: `Vec<String>` of selected words (unformatted, lowercase).
+
+## CI/CD
+
+- **PR gate** (`.github/workflows/ci.yml`): Runs `cargo fmt --check`, `cargo clippy -D warnings`, and `cargo test` on every pull request to `main`. Single job on `ubuntu-latest`.
+- **Release** (`.github/workflows/release.yml`): Triggers on `v*` tags. Builds release binaries for 4 targets (Linux x86-64, Windows x86-64, macOS Intel, macOS Apple Silicon) on native runners, then creates a GitHub Release with all binaries attached. Uses only the built-in `GITHUB_TOKEN`.
 
 ## Key protocols / APIs
 
