@@ -1,6 +1,4 @@
-# Commit Only
-
-Safely stage and commit without pushing. All quality gates enforced.
+# Safely stage and commit without pushing. All quality gates enforced.
 
 ## Required input
 - Commit message provided as $ARGUMENTS.

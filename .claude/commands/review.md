@@ -1,6 +1,4 @@
-# Review
-
-Run a code review on the current changes before merging.
+# Run a code review on the current changes before merging.
 
 ## What this does
 
