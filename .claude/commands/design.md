@@ -1,20 +1,6 @@
 # Design
 
-Produce a technical design for the current feature.
-
-## What this does
-
-Invokes the engineering-manager agent to:
-1. Read current state and confirm the exec plan artifact exists
-2. Update state to "design"
-3. Write the exact prompt for the **principal-engineer** agent to `.state/inbox/principal-engineer.md`
-
-The principal-engineer (run separately by you) will:
-- Read the exec plan, ARCHITECTURE.md, CONTRIBUTING.md, RELIABILITY.md
-- Scan the codebase for current structure
-- Write a ## Design section into the exec plan
-- Update ARCHITECTURE.md if new components are introduced
-- Update the state file
+Produce a technical design. Routes to the Principal Engineer agent, who reads the exec plan and codebase, then writes an approach, component changes, risks, and alternatives into the exec plan.
 
 ## Input
 
@@ -33,6 +19,18 @@ from the exec plan and codebase.
 
 2. Relay the engineering-manager's routing instruction to the user verbatim.
    The EM will tell the user which VS Code task to run.
+
+---
+
+## ▶ NEXT STEP
+
+Run the VS Code task **"Run Principal Engineer"** via **Terminal → Run Task…**
+
+## ✅ WHEN DONE
+
+Run **`/tasks`** to break the design into implementable tasks.
+
+---
 
 ## Rules
 

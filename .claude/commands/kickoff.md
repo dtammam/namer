@@ -1,14 +1,8 @@
 # Kickoff
 
-Bootstrap a new feature into the agent pipeline. This is the entry point.
+Start here. Bootstraps a new feature into the agent pipeline.
 
-## What this does
-
-Invokes the engineering-manager agent to:
-1. Initialize `.state/feature-state.json` for the new feature
-2. Read existing context (active plans, tech debt, CONTRIBUTING.md)
-3. Summarize the starting state
-4. Stop and wait for approval to proceed to Discovery
+Tell the system what you want to build — it initializes state, reads project context, and prepares for requirements gathering.
 
 ## Input
 
@@ -27,7 +21,13 @@ If empty, ask the user what they want to build.
 
 2. Relay the engineering-manager's output to the user.
 
-3. Tell the user: "When ready, run `/discover` to start requirements gathering."
+---
+
+## ▶ NEXT STEP
+
+Review the summary. When ready, run **`/discover`** to start requirements gathering.
+
+---
 
 ## Rules
 

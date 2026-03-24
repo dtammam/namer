@@ -1,19 +1,6 @@
 # Accept
 
-Validate that the implementation meets all acceptance criteria.
-
-## What this does
-
-Invokes the engineering-manager agent to:
-1. Read current state and confirm all tasks are complete
-2. Update state to "acceptance"
-3. Write the exact prompt for the **product-manager** agent to `.state/inbox/product-manager.md`
-
-The product-manager (run separately by you) will:
-- Read the exec plan's acceptance criteria
-- Verify each criterion against the current code and test results
-- Report explicit pass/fail for every criterion — "looks good" is not acceptance
-- Not implement fixes — report only
+Validate the implementation against acceptance criteria. Routes to the Product Manager agent, who checks every criterion explicitly and reports pass/fail — without fixing anything.
 
 ## Input
 
@@ -32,10 +19,21 @@ $ARGUMENTS is not typically needed.
 2. Relay the engineering-manager's routing instruction to the user verbatim.
    The EM will tell the user which VS Code task to run.
 
+---
+
+## ▶ NEXT STEP
+
+Run the VS Code task **"Run Product Manager"** via **Terminal → Run Task…**
+
+## ✅ WHEN DONE
+
+- If all criteria **pass** → run **`/done`** to close the feature
+- If any criteria **fail** → run **`/implement`** to fix, or defer to tech debt
+
+---
+
 ## Rules
 
 - All tasks must be complete before running acceptance.
 - The PM verifies — it does not implement fixes.
-- If criteria fail, run `/implement` to fix or defer to tech debt.
-- All criteria must be explicitly checked.
-- If all pass, run `/done`.
+- All criteria must be explicitly checked — "looks good" is not acceptance.

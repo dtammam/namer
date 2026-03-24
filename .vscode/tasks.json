@@ -4,7 +4,7 @@
     {
       "label": "Run Product Manager",
       "type": "shell",
-      "command": "/home/coder/.local/bin/claude",
+      "command": "claude",
       "args": ["--dangerously-skip-permissions", "--agent", "product-manager", "@.state/inbox/product-manager.md"],
       "presentation": {
         "reveal": "always",
@@ -16,7 +16,7 @@
     {
       "label": "Run Principal Engineer",
       "type": "shell",
-      "command": "/home/coder/.local/bin/claude",
+      "command": "claude",
       "args": ["--dangerously-skip-permissions", "--agent", "principal-engineer", "@.state/inbox/principal-engineer.md"],
       "presentation": {
         "reveal": "always",
@@ -28,7 +28,7 @@
     {
       "label": "Run Software Developer",
       "type": "shell",
-      "command": "/home/coder/.local/bin/claude",
+      "command": "claude",
       "args": ["--dangerously-skip-permissions", "--agent", "software-developer", "@.state/inbox/software-developer.md"],
       "presentation": {
         "reveal": "always",
@@ -40,7 +40,7 @@
     {
       "label": "Run Build Specialist",
       "type": "shell",
-      "command": "/home/coder/.local/bin/claude",
+      "command": "claude",
       "args": ["--dangerously-skip-permissions", "--agent", "build-specialist", "@.state/inbox/build-specialist.md"],
       "presentation": {
         "reveal": "always",
@@ -52,7 +52,7 @@
     {
       "label": "Run Quality Assurance",
       "type": "shell",
-      "command": "/home/coder/.local/bin/claude",
+      "command": "claude",
       "args": ["--dangerously-skip-permissions", "--agent", "quality-assurance", "@.state/inbox/quality-assurance.md"],
       "presentation": {
         "reveal": "always",

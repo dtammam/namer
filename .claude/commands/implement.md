@@ -1,21 +1,6 @@
 # Implement
 
-Implement the next incomplete task from the task breakdown.
-
-## What this does
-
-Invokes the engineering-manager agent to:
-1. Read current state and identify the next incomplete task
-2. Update state to "implementation"
-3. Write the exact prompt for the **software-developer** agent to `.state/inbox/software-developer.md`
-
-The software-developer (run separately by you) will:
-- Read the task description from the state file
-- Read the exec plan design section for technical direction
-- Read `docs/CONTRIBUTING.md` for coding standards
-- Implement code and tests for that ONE task
-- Run quality checks (fmt, clippy, test) and fix failures
-- Report files changed and tests added
+Implement the next incomplete task. Routes to the Software Developer agent, who writes code and tests for ONE task, runs quality checks, and reports what changed.
 
 ## Input
 
@@ -36,8 +21,22 @@ incomplete task in order.
 2. Relay the engineering-manager's routing instruction to the user verbatim.
    The EM will tell the user which VS Code task to run.
 
+---
+
+## ▶ NEXT STEP
+
+Run the VS Code task **"Run Software Developer"** via **Terminal → Run Task…**
+
+## ✅ WHEN DONE
+
+- If **more tasks remain** → run **`/implement`** again for the next task
+- If **all tasks are complete** → run **`/verify`** to validate the build
+- Optional: run **`/review`** for a code review at any point
+
+---
+
 ## Rules
 
 - ONE task per invocation.
 - The EM outputs instructions — it does not run the SDE itself.
-- If all tasks are already complete, the EM should tell the user to run `/accept`.
+- If all tasks are already complete, the EM should tell the user to run `/verify`.

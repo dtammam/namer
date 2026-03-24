@@ -28,34 +28,32 @@ visible to the user — no intermediary summaries, no copy-paste.
 
 ### Agents (`.claude/agents/`)
 
-| Agent | Role | Invoked by |
-|-------|------|------------|
-| `engineering-manager` | State manager + router | Main session (via SOP commands) |
-| `product-manager` | Requirements & acceptance | VS Code task "Run Product Manager" |
-| `principal-engineer` | Technical design | VS Code task "Run Principal Engineer" |
-| `software-developer` | Implementation | VS Code task "Run Software Developer" |
-| `build-specialist` | Build & test runner | VS Code task "Run Build Specialist" |
-| `quality-assurance` | Code review | VS Code task "Run Quality Assurance" |
+| Agent | What it does | How to run it |
+|-------|-------------|---------------|
+| `engineering-manager` | Tracks feature state, routes work to specialists, manages stage transitions | Invoked automatically by `/commands` |
+| `product-manager` | Gathers requirements + acceptance criteria (Discovery), validates delivered work (Acceptance) | VS Code task **"Run Product Manager"** |
+| `principal-engineer` | Reads requirements and codebase, produces technical design with approach, risks, alternatives | VS Code task **"Run Principal Engineer"** |
+| `software-developer` | Implements ONE task at a time — writes code, tests, runs quality checks | VS Code task **"Run Software Developer"** |
+| `build-specialist` | Runs build + test + lint + format checks, reports pass/fail (never fixes code) | VS Code task **"Run Build Specialist"** |
+| `quality-assurance` | Reviews code for correctness, security, performance, standards compliance (never fixes code) | VS Code task **"Run Quality Assurance"** |
 
-### SOP commands (`.claude/commands/`)
+### Commands (`.claude/commands/`)
 
-Each command invokes the engineering-manager. The EM reads state, updates it,
-writes the specialist prompt to `.state/inbox/<agent-name>.md`, and tells the
-user which VS Code task to run. The user launches the task via
-**Terminal → Run Task…**.
+Each command moves the feature one stage forward. Run them in order.
 
-| Command | EM does | You then do |
-|---------|---------|-------------|
-| `/kickoff` | Initializes state, summarizes context | Approve, then `/discover` |
-| `/discover` | Writes PM prompt to inbox | Run VS Code task "Run Product Manager" |
-| `/design` | Writes PE prompt to inbox | Run VS Code task "Run Principal Engineer" |
-| `/tasks` | Breaks work into tasks, writes state | Approve, then `/implement` |
-| `/implement` | Writes SDE prompt to inbox | Run VS Code task "Run Software Developer" |
-| `/verify` | Writes build-specialist prompt to inbox | Run VS Code task "Run Build Specialist" |
-| `/accept` | Writes PM prompt to inbox | Run VS Code task "Run Product Manager" |
-| `/done` | Archives plan, closes feature | Commit via `/commit-and-push` |
-| `/commit-only` | — | Stages and commits |
-| `/commit-and-push` | — | Stages, commits, pushes |
+| Command | What it does | Then you do |
+|---------|-------------|-------------|
+| **`/kickoff`** | Initializes state, reads project context, summarizes starting point | Review summary → **`/discover`** |
+| **`/discover`** | Routes to PM to gather requirements and write exec plan | Run task **"Run Product Manager"** → **`/design`** |
+| **`/design`** | Routes to PE to produce technical design in exec plan | Run task **"Run Principal Engineer"** → **`/tasks`** |
+| **`/tasks`** | EM breaks design into small, testable tasks with definitions of done | Review tasks → **`/implement`** |
+| **`/implement`** | Routes ONE task to SDE for implementation | Run task **"Run Software Developer"** → repeat or **`/verify`** |
+| **`/verify`** | Routes to build specialist to run all quality gates | Run task **"Run Build Specialist"** → **`/accept`** |
+| **`/review`** | Routes to QA for code review (optional, recommended for non-trivial changes) | Run task **"Run Quality Assurance"** → fix or proceed |
+| **`/accept`** | Routes to PM to validate every acceptance criterion | Run task **"Run Product Manager"** → **`/done`** |
+| **`/done`** | Archives plan, commits, pushes, creates PR, offers release tagging | Merge PR → **`/kickoff`** for next feature |
+| **`/commit-only`** | Stages and commits (no push) | — |
+| **`/commit-and-push`** | Stages, commits, pushes | — |
 
 ### VS Code tasks (`.vscode/tasks.json`)
 
@@ -77,6 +75,8 @@ agents. These are `.gitignore`d — only `.gitkeep` is tracked.
 /kickoff → /discover → /design → /tasks → /implement → /verify → /accept → /done
                                               ↑            |
                                               └── (next) ──┘
+
+Optional at any point: /review (code review)
 ```
 
 Every stage transition requires explicit user approval. No auto-progression.

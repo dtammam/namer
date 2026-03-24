@@ -1,19 +1,6 @@
 # Discover
 
-Gather requirements and acceptance criteria for the current feature.
-
-## What this does
-
-Invokes the engineering-manager agent to:
-1. Read current state from `.state/feature-state.json`
-2. Update state to "discovery"
-3. Write the exact prompt for the **product-manager** agent to `.state/inbox/product-manager.md`
-
-The product-manager (run separately by you) will:
-- Gather goal, scope, out-of-scope, constraints, acceptance criteria
-- Cross-check against `docs/CONTRIBUTING.md` mandatory standards
-- Write the exec plan to `docs/exec-plans/active/`
-- Update the state file with the artifact path
+Gather requirements and acceptance criteria. Routes to the Product Manager agent, who defines goal, scope, constraints, and writes the exec plan.
 
 ## Input
 
@@ -32,6 +19,18 @@ If empty, the PM works from the state file.
 
 2. Relay the engineering-manager's routing instruction to the user verbatim.
    The EM will tell the user which VS Code task to run.
+
+---
+
+## ▶ NEXT STEP
+
+Run the VS Code task **"Run Product Manager"** via **Terminal → Run Task…**
+
+## ✅ WHEN DONE
+
+Run **`/design`** to produce the technical design.
+
+---
 
 ## Rules
 

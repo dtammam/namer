@@ -1,18 +1,6 @@
 # Tasks
 
-Break the approved design into discrete, implementable tasks.
-
-## What this does
-
-Invokes the engineering-manager agent to:
-1. Read the exec plan (requirements + design)
-2. Break the work into tasks, each of which is:
-   - Small enough for one implementation session
-   - Independently testable
-   - Clearly scoped (files to touch, behavior to add/change)
-3. Write the task list to `.state/feature-state.json` tasks array
-4. Write the Task Breakdown section of the exec plan
-5. Stop and present the task list for approval
+Break the approved design into discrete, implementable tasks. The engineering-manager reads the exec plan and splits the work into small, independently testable units with clear definitions of done.
 
 ## Input
 
@@ -31,8 +19,17 @@ this is trivial"). If empty, the EM decides based on the design.
 
 2. Relay the engineering-manager's output to the user.
 
-3. Tell the user: "Review the task breakdown above. When approved, run
-   `/implement` to start the first task."
+---
+
+## ▶ NEXT STEP
+
+Review the task breakdown above.
+
+## ✅ WHEN APPROVED
+
+Run **`/implement`** to start the first task.
+
+---
 
 ## Rules
 
