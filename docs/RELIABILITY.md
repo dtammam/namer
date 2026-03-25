@@ -8,7 +8,9 @@
 
 ## Invariants
 
-(None yet — to be defined as the project grows)
+- `generate_name` always returns exactly one adjective and one noun (enforced by `NameParts` struct).
+- Word lists (`ADJECTIVES`, `NOUNS`) each contain at least one entry.
+- `format_name` only applies casing to words, never to the delimiter.
 
 ## When a budget is at risk
 
