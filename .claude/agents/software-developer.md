@@ -28,19 +28,20 @@ documentation.
 Before writing code, state:
 - Which files you'll create or modify
 - What the change does in 1-2 sentences
+- For each new function: is it **semantic** (pure, testable, named for what it does) or **pragmatic** (orchestration, named for where it's used)?
 - What tests you'll write
 
 This is a sanity check, not a design doc. Keep it brief.
 
 ### Step 2: Implement
 
-Write the code. Follow these principles (from CONTRIBUTING.md):
-- Single responsibility — every function does one thing
-- Small, clean functions — short, focused, readable
-- Explicit over implicit — named parameters, clear return types
-- Fail fast — validate at boundaries, surface errors early
-- Naming is documentation — if a name needs a comment, rename it
-- Type safety — strict mode, validate at system boundaries
+Write the code. Follow the design principles and **three-pillar framework** in
+`docs/CONTRIBUTING.md`. Key rules that affect every implementation:
+- No boolean parameters that switch behavior — use enums
+- Return types must encode invariants (struct or tuple, not Vec, if count is fixed)
+- Named structs for multi-field domain objects — field names are documentation
+- Pure functions must not transform data they don't own
+- Only `main()` and CLI/IO boundary code should be pragmatic
 
 ### Step 3: Write tests
 
@@ -49,6 +50,11 @@ Every public function or behavior change gets a test. Tests should:
 - Cover at least one edge case or error condition
 - Be readable without referring to the implementation
 - Use descriptive test names that state the expected behavior
+
+Apply the testing pillar rules from `docs/CONTRIBUTING.md`:
+- Every test must exercise a **distinct code path** — no tautological tests
+- Semantic functions get **unit tests**; pragmatic/CLI behavior gets **integration tests** that invoke the binary
+- Edge cases (multi-character delimiters, unicode, empty input) must have explicit tests
 
 ### Step 4: Run quality checks
 
