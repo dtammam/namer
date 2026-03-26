@@ -35,21 +35,22 @@ All components live in `src/main.rs`:
 
 ```
 main()
-  |-- Cli::parse()          (clap-derived arg struct)
-  |-- generate_name(rng)    (returns Vec<String> of random words)
-  |-- format_name(words, lowercase, delimiter)  (applies casing + joining)
-  |-- println!              (output)
+  |-- Cli::parse()              (clap-derived arg struct)
+  |-- generate_name(rng)        (returns NameParts { adjective, noun })
+  |-- format_name(parts, casing, delimiter)  (applies casing to words + joins)
+  |-- println!                  (output)
 ```
 
 - `generate_name` depends only on `rand` and the word list constants.
-- `format_name` is a pure function with no external dependencies.
+- `format_name` is a pure function with no external dependencies. Only cases the words, not the delimiter.
 - `Cli` depends on `clap` derive macros.
 
 ## Data model
 
 - **Word lists**: `ADJECTIVES` and `NOUNS` are `&[&str]` const arrays of lowercase English words.
-- **`Cli` struct**: Clap-derived struct with fields `lower: bool` and `delimiter: Option<String>`.
-- **Name generation output**: `Vec<String>` of selected words (unformatted, lowercase).
+- **`Cli` struct**: Clap-derived struct with fields `lower: bool` and `delimiter: String` (defaults to `""`).
+- **`NameParts` struct**: `{ adjective: String, noun: String }` — the output of `generate_name`, unformatted lowercase.
+- **`Casing` enum**: `Upper` or `Lower` — controls output casing in `format_name`.
 
 ## CI/CD
 

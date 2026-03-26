@@ -102,7 +102,7 @@ For tech debt: `docs/exec-plans/tech-debt-tracker.md`
 
 ## Coding standards
 
-See `docs/CONTRIBUTING.md` for design principles and coding standards.
+See `docs/CONTRIBUTING.md` for design principles, coding standards, and the three-pillar code quality framework.
 
 ## Quality gates
 

@@ -53,10 +53,19 @@ For each changed file, check:
 - Any unnecessary allocations, copies, or computations?
 - Any N+1 patterns or unbounded loops?
 
+**Three-pillar compliance** (see `docs/CONTRIBUTING.md`)
+- Are all non-boundary functions semantic (pure, no side effects)?
+- Any boolean parameters that should be enums?
+- Do return types encode invariants (no Vec for fixed-count returns)?
+- Any `Option` fields that have a sensible default (`default_value` at parse boundary)?
+- Are multi-field domain objects named structs, not tuples or bare Vecs?
+
 **Tests**
 - Do tests exist for the new behavior?
 - Do tests cover edge cases?
 - Are test names descriptive?
+- Does every test exercise a distinct code path (no tautological tests)?
+- Semantic functions unit-tested? Pragmatic/CLI behavior integration-tested?
 
 ### Step 3: Report
 

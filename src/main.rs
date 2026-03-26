@@ -12,8 +12,8 @@ struct Cli {
     lower: bool,
 
     /// String placed between words in the output. Defaults to no separator.
-    #[arg(long)]
-    delimiter: Option<String>,
+    #[arg(long, default_value = "")]
+    delimiter: String,
 }
 
 const ADJECTIVES: &[&str] = &[
@@ -24,117 +24,145 @@ const NOUNS: &[&str] = &[
     "cloud", "falcon", "grove", "harbor", "island", "jaguar", "koala", "lantern", "meadow", "river",
 ];
 
-/// Picks one random adjective and one random noun and returns them as a `Vec<String>`.
-///
-/// The returned vec always has exactly two elements: `[adjective, noun]`, both
-/// in the original lowercase form from the word lists. No formatting is applied.
-pub fn generate_name(rng: &mut impl Rng) -> Vec<String> {
-    let adjective = ADJECTIVES[rng.random_range(0..ADJECTIVES.len())];
-    let noun = NOUNS[rng.random_range(0..NOUNS.len())];
-    vec![adjective.to_string(), noun.to_string()]
+/// The two components of a generated name: an adjective and a noun.
+pub struct NameParts {
+    pub adjective: String,
+    pub noun: String,
 }
 
-/// Joins `words` with `delimiter` and applies casing.
+/// Controls whether output is uppercased or lowercased.
+pub enum Casing {
+    Upper,
+    Lower,
+}
+
+/// Picks one random adjective and one random noun.
 ///
-/// If `lowercase` is `true`, the joined string is lowercased; otherwise it is
-/// uppercased. Because words from `generate_name` are already lowercase, the
-/// lowercase path is a no-op in practice, but remains explicit for correctness.
-pub fn format_name(words: &[String], lowercase: bool, delimiter: &str) -> String {
-    let joined = words.join(delimiter);
-    if lowercase {
-        joined.to_lowercase()
-    } else {
-        joined.to_uppercase()
+/// The returned parts are in the original lowercase form from the word lists.
+/// No formatting is applied.
+pub fn generate_name(rng: &mut impl Rng) -> NameParts {
+    let adjective = ADJECTIVES[rng.random_range(0..ADJECTIVES.len())];
+    let noun = NOUNS[rng.random_range(0..NOUNS.len())];
+    NameParts {
+        adjective: adjective.to_string(),
+        noun: noun.to_string(),
     }
+}
+
+/// Joins the name parts with `delimiter` and applies casing to the words only.
+///
+/// The delimiter is preserved as-is — only the adjective and noun are cased.
+pub fn format_name(parts: &NameParts, casing: Casing, delimiter: &str) -> String {
+    let (adj, noun) = match casing {
+        Casing::Upper => (parts.adjective.to_uppercase(), parts.noun.to_uppercase()),
+        Casing::Lower => (parts.adjective.to_lowercase(), parts.noun.to_lowercase()),
+    };
+    format!("{adj}{delimiter}{noun}")
 }
 
 fn main() {
     let cli = Cli::parse();
     let mut rng = rand::rng();
-    let words = generate_name(&mut rng);
-    let delimiter = cli.delimiter.as_deref().unwrap_or("");
-    println!("{}", format_name(&words, cli.lower, delimiter));
+    let parts = generate_name(&mut rng);
+    let casing = if cli.lower {
+        Casing::Lower
+    } else {
+        Casing::Upper
+    };
+    println!("{}", format_name(&parts, casing, &cli.delimiter));
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{ADJECTIVES, NOUNS, format_name, generate_name};
+    use super::{ADJECTIVES, Casing, NOUNS, NameParts, format_name, generate_name};
     use rand::{SeedableRng, rngs::SmallRng};
+
     #[test]
-    fn test_generate_name_format() {
+    fn generate_name_returns_lowercase_adjective_and_noun() {
         let mut rng = SmallRng::seed_from_u64(42);
-        let words = generate_name(&mut rng);
-        assert_eq!(words.len(), 2);
-        let adj = &words[0];
-        let noun = &words[1];
-        assert!(!adj.is_empty() && adj.chars().all(|c| c.is_ascii_lowercase()));
-        assert!(!noun.is_empty() && noun.chars().all(|c| c.is_ascii_lowercase()));
+        let parts = generate_name(&mut rng);
+        assert!(
+            !parts.adjective.is_empty() && parts.adjective.chars().all(|c| c.is_ascii_lowercase())
+        );
+        assert!(!parts.noun.is_empty() && parts.noun.chars().all(|c| c.is_ascii_lowercase()));
     }
 
     #[test]
-    fn test_generate_name_from_word_lists() {
+    fn generate_name_picks_from_word_lists() {
         let mut rng = SmallRng::seed_from_u64(42);
-        let words = generate_name(&mut rng);
-        assert_eq!(words.len(), 2);
-        assert!(ADJECTIVES.contains(&words[0].as_str()) && NOUNS.contains(&words[1].as_str()));
+        let parts = generate_name(&mut rng);
+        assert!(ADJECTIVES.contains(&parts.adjective.as_str()));
+        assert!(NOUNS.contains(&parts.noun.as_str()));
     }
 
     #[test]
-    fn test_generate_name_deterministic() {
+    fn generate_name_is_deterministic_for_same_seed() {
         let a = generate_name(&mut SmallRng::seed_from_u64(42));
         let b = generate_name(&mut SmallRng::seed_from_u64(42));
-        assert_eq!(a, b);
+        assert_eq!(a.adjective, b.adjective);
+        assert_eq!(a.noun, b.noun);
     }
 
-    fn words(a: &str, b: &str) -> Vec<String> {
-        vec![a.to_string(), b.to_string()]
+    fn parts(adj: &str, noun: &str) -> NameParts {
+        NameParts {
+            adjective: adj.to_string(),
+            noun: noun.to_string(),
+        }
     }
 
     #[test]
-    fn format_name_uppercase_no_delimiter_produces_all_caps_concatenated() {
+    fn format_name_upper_no_delimiter_produces_all_caps_concatenated() {
         assert_eq!(
-            format_name(&words("bold", "falcon"), false, ""),
+            format_name(&parts("bold", "falcon"), Casing::Upper, ""),
             "BOLDFALCON"
         );
     }
 
     #[test]
-    fn format_name_lowercase_no_delimiter_produces_lowercase_concatenated() {
+    fn format_name_lower_no_delimiter_produces_lowercase_concatenated() {
         assert_eq!(
-            format_name(&words("bold", "falcon"), true, ""),
+            format_name(&parts("bold", "falcon"), Casing::Lower, ""),
             "boldfalcon"
         );
     }
 
     #[test]
-    fn format_name_uppercase_with_hyphen_delimiter_produces_all_caps_hyphenated() {
+    fn format_name_upper_with_hyphen_delimiter() {
         assert_eq!(
-            format_name(&words("bold", "falcon"), false, "-"),
+            format_name(&parts("bold", "falcon"), Casing::Upper, "-"),
             "BOLD-FALCON"
         );
     }
 
     #[test]
-    fn format_name_lowercase_with_hyphen_delimiter_produces_lowercase_hyphenated() {
+    fn format_name_lower_with_hyphen_delimiter() {
         assert_eq!(
-            format_name(&words("bold", "falcon"), true, "-"),
+            format_name(&parts("bold", "falcon"), Casing::Lower, "-"),
             "bold-falcon"
         );
     }
 
     #[test]
-    fn format_name_uppercase_with_underscore_delimiter_produces_all_caps_underscored() {
+    fn format_name_upper_with_underscore_delimiter() {
         assert_eq!(
-            format_name(&words("bold", "falcon"), false, "_"),
+            format_name(&parts("bold", "falcon"), Casing::Upper, "_"),
             "BOLD_FALCON"
         );
     }
 
     #[test]
-    fn format_name_empty_delimiter_produces_same_result_as_no_delimiter() {
-        let with_empty = format_name(&words("bold", "falcon"), false, "");
-        let with_none = format_name(&words("bold", "falcon"), false, "");
-        assert_eq!(with_empty, with_none);
-        assert_eq!(with_empty, "BOLDFALCON");
+    fn format_name_delimiter_is_not_cased() {
+        assert_eq!(
+            format_name(&parts("bold", "falcon"), Casing::Upper, "x"),
+            "BOLDxFALCON"
+        );
+    }
+
+    #[test]
+    fn format_name_multi_character_delimiter_preserved() {
+        assert_eq!(
+            format_name(&parts("bold", "falcon"), Casing::Upper, "---"),
+            "BOLD---FALCON"
+        );
     }
 }
