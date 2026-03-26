@@ -1,6 +1,6 @@
-# Accept
+# Validate the implementation against acceptance criteria.
 
-Validate the implementation against acceptance criteria. Routes to the Product Manager agent, who checks every criterion explicitly and reports pass/fail — without fixing anything.
+Routes to the Product Manager agent, who checks every criterion explicitly and reports pass/fail — without fixing anything.
 
 ## Input
 

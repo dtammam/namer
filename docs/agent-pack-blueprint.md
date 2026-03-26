@@ -148,6 +148,7 @@ your-project/
 1. **CLAUDE.md** — Set up the main session instructions. The key section is the "What YOU do" block that tells the main session to route through the EM. Customize the reference docs, quality gates, and commands sections for your project's toolchain.
 
 2. **`.gitignore`** — Add these lines:
+
    ```
    .state/feature-state.json
    .state/inbox/*.md
@@ -207,6 +208,7 @@ EOF
 ```
 
 Configure it in `.claude/settings.json`:
+
 ```json
 {
   "hooks": {

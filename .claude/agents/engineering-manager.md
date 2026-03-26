@@ -60,6 +60,7 @@ The shared state lives at `.state/feature-state.json`. Read it on startup.
 Initialize it when the user describes a new feature.
 
 Schema:
+
 ```json
 {
   "feature_id": "short-kebab-case-slug",

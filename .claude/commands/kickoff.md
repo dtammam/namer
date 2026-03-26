@@ -1,6 +1,4 @@
-# Kickoff
-
-Start here. Bootstraps a new feature into the agent pipeline.
+# Start here. Bootstraps a new feature into the agent pipeline.
 
 Tell the system what you want to build — it initializes state, reads project context, and prepares for requirements gathering.
 

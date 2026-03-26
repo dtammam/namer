@@ -1,6 +1,6 @@
-# Design
+# Produce a technical design.
 
-Produce a technical design. Routes to the Principal Engineer agent, who reads the exec plan and codebase, then writes an approach, component changes, risks, and alternatives into the exec plan.
+Routes to the Principal Engineer agent, who reads the exec plan and codebase, then writes an approach, component changes, risks, and alternatives into the exec plan.
 
 ## Input
 

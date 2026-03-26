@@ -1,10 +1,14 @@
+mod words;
+
 use clap::Parser;
 use rand::Rng;
+use words::{ADJECTIVES, NOUNS};
 
 /// Generates a random name from a curated list of adjectives and nouns.
 ///
 /// By default the output is ALL CAPS with no delimiter between words.
 /// Use `--lower` for lowercase output and `--delimiter` to insert a separator.
+/// Use `--number` to generate multiple names at once (up to 1000).
 #[derive(Parser)]
 struct Cli {
     /// Output the name in lowercase instead of the default ALL CAPS.
@@ -14,15 +18,11 @@ struct Cli {
     /// String placed between words in the output. Defaults to no separator.
     #[arg(long, default_value = "")]
     delimiter: String,
+
+    /// Number of names to generate (1-1000).
+    #[arg(long, default_value_t = 1, value_parser = clap::value_parser!(u32).range(1..=1000))]
+    number: u32,
 }
-
-const ADJECTIVES: &[&str] = &[
-    "bold", "bright", "calm", "eager", "fierce", "gentle", "happy", "keen", "lively", "noble",
-];
-
-const NOUNS: &[&str] = &[
-    "cloud", "falcon", "grove", "harbor", "island", "jaguar", "koala", "lantern", "meadow", "river",
-];
 
 /// The two components of a generated name: an adjective and a noun.
 pub struct NameParts {
@@ -31,6 +31,7 @@ pub struct NameParts {
 }
 
 /// Controls whether output is uppercased or lowercased.
+#[derive(Clone, Copy)]
 pub enum Casing {
     Upper,
     Lower,
@@ -63,19 +64,23 @@ pub fn format_name(parts: &NameParts, casing: Casing, delimiter: &str) -> String
 fn main() {
     let cli = Cli::parse();
     let mut rng = rand::rng();
-    let parts = generate_name(&mut rng);
     let casing = if cli.lower {
         Casing::Lower
     } else {
         Casing::Upper
     };
-    println!("{}", format_name(&parts, casing, &cli.delimiter));
+    for _ in 0..cli.number {
+        let parts = generate_name(&mut rng);
+        println!("{}", format_name(&parts, casing, &cli.delimiter));
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{ADJECTIVES, Casing, NOUNS, NameParts, format_name, generate_name};
+    use super::{Casing, NameParts, format_name, generate_name};
+    use crate::words::{ADJECTIVES, NOUNS};
     use rand::{SeedableRng, rngs::SmallRng};
+    use std::collections::HashSet;
 
     #[test]
     fn generate_name_returns_lowercase_adjective_and_noun() {
@@ -163,6 +168,51 @@ mod tests {
         assert_eq!(
             format_name(&parts("bold", "falcon"), Casing::Upper, "---"),
             "BOLD---FALCON"
+        );
+    }
+
+    #[test]
+    fn word_lists_contain_exactly_777_entries_each() {
+        assert_eq!(ADJECTIVES.len(), 777);
+        assert_eq!(NOUNS.len(), 777);
+    }
+
+    #[test]
+    fn word_list_entries_are_non_empty_lowercase_ascii_alphabetic() {
+        for word in ADJECTIVES {
+            assert!(
+                !word.is_empty() && word.bytes().all(|b| b.is_ascii_lowercase()),
+                "adjective {word:?} contains non-lowercase-ASCII or is empty"
+            );
+        }
+        for word in NOUNS {
+            assert!(
+                !word.is_empty() && word.bytes().all(|b| b.is_ascii_lowercase()),
+                "noun {word:?} contains non-lowercase-ASCII or is empty"
+            );
+        }
+    }
+
+    #[test]
+    fn word_lists_have_no_duplicates_and_no_cross_list_overlap() {
+        let adj_set: HashSet<&str> = ADJECTIVES.iter().copied().collect();
+        let noun_set: HashSet<&str> = NOUNS.iter().copied().collect();
+
+        assert_eq!(
+            adj_set.len(),
+            ADJECTIVES.len(),
+            "adjectives list contains duplicates"
+        );
+        assert_eq!(
+            noun_set.len(),
+            NOUNS.len(),
+            "nouns list contains duplicates"
+        );
+
+        let overlap: Vec<&str> = adj_set.intersection(&noun_set).copied().collect();
+        assert!(
+            overlap.is_empty(),
+            "words appear in both lists: {overlap:?}"
         );
     }
 }

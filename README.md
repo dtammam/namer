@@ -15,38 +15,33 @@ namer is a command-line tool that generates random two-word names by combining a
 
 ## Installation
 
-Download the latest binary for your platform and make it executable — no dependencies required.
+Paste the one-liner for your platform — it checks whether `namer` is already installed and skips the download if so. No dependencies required.
 
 ### macOS (Apple Silicon)
 
 ```sh
-curl -L https://github.com/dtammam/namer/releases/latest/download/namer-aarch64-apple-darwin -o namer
-chmod +x namer
-./namer
+which namer || (sudo curl -L https://github.com/dtammam/namer/releases/latest/download/namer-aarch64-apple-darwin -o /usr/local/bin/namer && sudo chmod +x /usr/local/bin/namer) && namer
 ```
 
 ### macOS (Intel)
 
 ```sh
-curl -L https://github.com/dtammam/namer/releases/latest/download/namer-x86_64-apple-darwin -o namer
-chmod +x namer
-./namer
+which namer || (sudo curl -L https://github.com/dtammam/namer/releases/latest/download/namer-x86_64-apple-darwin -o /usr/local/bin/namer && sudo chmod +x /usr/local/bin/namer) && namer
 ```
 
 ### Linux (x86-64)
 
 ```sh
-curl -L https://github.com/dtammam/namer/releases/latest/download/namer-x86_64-unknown-linux-gnu -o namer
-chmod +x namer
-./namer
+which namer || (sudo curl -L https://github.com/dtammam/namer/releases/latest/download/namer-x86_64-unknown-linux-gnu -o /usr/local/bin/namer && sudo chmod +x /usr/local/bin/namer) && namer
 ```
 
 ### Windows (x86-64)
 
 ```powershell
-Invoke-WebRequest -Uri https://github.com/dtammam/namer/releases/latest/download/namer-x86_64-pc-windows-msvc.exe -OutFile namer.exe
-.\namer.exe
+if (-not (Get-Command namer -ErrorAction SilentlyContinue)) { Invoke-WebRequest -Uri https://github.com/dtammam/namer/releases/latest/download/namer-x86_64-pc-windows-msvc.exe -OutFile namer.exe }; .\namer.exe
 ```
+
+This downloads `namer.exe` to your current directory and runs it from there.
 
 ### Build from source
 
@@ -99,7 +94,7 @@ bold_falcon
 $ namer --help
 Generates a random name from a curated list of adjectives and nouns.
 
-By default the output is ALL CAPS with no delimiter between words. Use `--lower` for lowercase output and `--delimiter` to insert a separator.
+By default the output is ALL CAPS with no delimiter between words. Use `--lower` for lowercase output and `--delimiter` to insert a separator. Use `--number` to generate multiple names at once (up to 1000).
 
 Usage: namer [OPTIONS]
 
@@ -109,6 +104,13 @@ Options:
 
       --delimiter <DELIMITER>
           String placed between words in the output. Defaults to no separator
+
+          [default: ""]
+
+      --number <NUMBER>
+          Number of names to generate (1-1000)
+
+          [default: 1]
 
   -h, --help
           Print help (see a summary with '-h')

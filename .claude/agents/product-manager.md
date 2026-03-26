@@ -51,6 +51,7 @@ still can't articulate it, note the ambiguity and move on — don't block.
 Create: `docs/exec-plans/active/YYYY-MM-DD-<feature-slug>.md`
 
 Use this structure:
+
 ```markdown
 # [Feature Name]
 
@@ -108,6 +109,7 @@ For each acceptance criterion:
 ### Step 3: Report
 
 Present a structured report:
+
 ```
 Acceptance Report: [Feature Name]
 

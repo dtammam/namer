@@ -8,4 +8,6 @@ echo "=== pre-commit ==="
 
 cargo fmt -- --check && cargo clippy -- -D warnings
 
+npx markdownlint-cli2 '**/*.md'
+
 echo "pre-commit checks passed"

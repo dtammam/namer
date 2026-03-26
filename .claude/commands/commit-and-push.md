@@ -1,6 +1,4 @@
-# Commit And Push
-
-Safely commit and push to origin with all quality gates enforced.
+# Safely commit and push to origin with all quality gates enforced.
 
 ## Required input
 - Commit message provided as $ARGUMENTS.

@@ -1,0 +1,5 @@
+// markdownlint-cli2 configuration
+// Rule customizations live in .markdownlint.json
+{
+  "ignores": [".state/inbox/*.md"]
+}

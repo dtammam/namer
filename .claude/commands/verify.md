@@ -1,6 +1,6 @@
-# Verify
+# Run the build and test suite.
 
-Run the build and test suite. Routes to the Build Specialist agent, who runs all quality gates and reports pass/fail — without fixing anything.
+Routes to the Build Specialist agent, who runs all quality gates and reports pass/fail — without fixing anything.
 
 ## Input
 
