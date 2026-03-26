@@ -43,6 +43,9 @@ Write the code. Follow the design principles and **three-pillar framework** in
 - Pure functions must not transform data they don't own
 - Only `main()` and CLI/IO boundary code should be pragmatic
 
+When creating or modifying `.md` files, ensure: blank lines around fenced code
+blocks, no trailing spaces, and files end with a single newline.
+
 ### Step 3: Write tests
 
 Every public function or behavior change gets a test. Tests should:
@@ -62,6 +65,7 @@ Before reporting completion, run:
 - The project's lint command
 - The project's type-check command (if applicable)
 - The project's test suite
+- `npx markdownlint-cli2 '**/*.md'` if any `.md` files were created or modified
 
 If any check fails, fix it. Do not report completion with failing checks.
 If a failure seems unrelated to your change, note it but still fix it if possible.
@@ -69,6 +73,7 @@ If a failure seems unrelated to your change, note it but still fix it if possibl
 ### Step 5: Report completion
 
 Provide a concise summary:
+
 ```
 Task: [task description]
 Status: Complete

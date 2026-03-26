@@ -104,5 +104,8 @@ Summarize the design concisely. Highlight:
 - If the feature conflicts with existing architecture, flag it rather than silently
   working around it
 - You may only write to `.state/feature-state.json`. Do not create or modify any
-  other files. If files need to be created or modified, delegate to the appropriate 
+  other files. If files need to be created or modified, delegate to the appropriate
   agent.
+- Exec plans and design documents are markdown files and must pass markdownlint.
+  Key rules: blank lines around fenced code blocks, no trailing spaces, files end
+  with a single newline.

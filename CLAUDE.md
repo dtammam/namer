@@ -106,7 +106,7 @@ See `docs/CONTRIBUTING.md` for design principles, coding standards, and the thre
 
 ## Quality gates
 
-- `pre-commit`: cargo fmt -- --check && cargo clippy -- -D warnings
+- `pre-commit`: cargo fmt -- --check && cargo clippy -- -D warnings && npx markdownlint-cli2 '**/*.md'
 - `pre-push`: cargo test
 - Never use `--no-verify`. Fix the root cause.
 
@@ -116,9 +116,10 @@ See `docs/CONTRIBUTING.md` for design principles, coding standards, and the thre
 cargo build
 cargo test
 cargo clippy
+npx markdownlint-cli2 '**/*.md'
 ```
 
 ## Active work
 
 Active exec plans: (none)
-Completed plans: `docs/exec-plans/completed/2026-03-22-namer-mvp.md`, `docs/exec-plans/completed/2026-03-23-output-formatting-flags.md`, `docs/exec-plans/completed/2026-03-23-release-ci-branding-readme.md`, `docs/exec-plans/completed/2026-03-24-readme-refinement.md`
+Completed plans: `docs/exec-plans/completed/2026-03-22-namer-mvp.md`, `docs/exec-plans/completed/2026-03-23-output-formatting-flags.md`, `docs/exec-plans/completed/2026-03-23-release-ci-branding-readme.md`, `docs/exec-plans/completed/2026-03-24-readme-refinement.md`, `docs/exec-plans/completed/2026-03-24-expanded-lists-bulk-gen-versioning.md`

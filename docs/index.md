@@ -10,6 +10,7 @@ Start here, then follow links.
 - Architecture: `ARCHITECTURE.md`
 - Reliability & performance budgets: `RELIABILITY.md`
 - Plans & execution artifacts: `PLANS.md`
+- Versioning & release policy: `VERSIONING.md`
 
 ## Execution plans
 

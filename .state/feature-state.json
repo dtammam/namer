@@ -1,1 +1,96 @@
-{}
+{
+  "feature_id": "expanded-lists-bulk-gen-versioning",
+  "feature_name": "Expanded Word Lists, Bulk Generation (--number), and Versioning/Release Notes",
+  "stage": "done",
+  "created_at": "2026-03-24",
+  "updated_at": "2026-03-26T00:17",
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Populate src/words.rs with exactly 777 unique adjectives and 777 unique nouns",
+      "description": "Replace the current contents of src/words.rs with exactly 777 curated, real English adjectives and 777 curated, real English nouns. All entries must be lowercase ASCII alphabetic only (no hyphens, digits, spaces, or uppercase). No duplicates within either list. No fabricated/nonsense words. Update src/main.rs: add mod words; declaration, replace local ADJECTIVES/NOUNS consts with use words::{ADJECTIVES, NOUNS}. Add tests: (a) ADJECTIVES.len() == 777 and NOUNS.len() == 777, (b) all entries are lowercase ASCII alphabetic only, (c) no duplicates within each list. All existing tests must continue to pass.",
+      "files": ["src/words.rs", "src/main.rs"],
+      "done_when": "src/words.rs exists with exactly 777 adjectives and 777 nouns, all real English words, lowercase alphabetic only, no duplicates. main.rs imports from words module. New tests for list length, character validation, and uniqueness pass. All existing tests pass. cargo fmt, clippy, and test all green."
+    },
+    {
+      "id": 2,
+      "title": "Add --number N flag for bulk name generation",
+      "description": "Add number: u32 field to Cli struct with #[arg(long, default_value_t = 1, value_parser = clap::value_parser!(u32).range(1..=1000))]. Wrap the generate+format+println! sequence in main() in a for loop of cli.number iterations. Add tests: (a) generating N names produces exactly N results, (b) default (no flag) produces exactly 1 name. Verify --help includes --number with description.",
+      "files": ["src/main.rs"],
+      "done_when": "namer --number 5 prints exactly 5 lines. namer (no flag) prints 1 line. --number 0 and --number 1001 are rejected with clear errors. --help shows --number. Tests cover N-line output. cargo fmt, clippy, and test all green."
+    },
+    {
+      "id": 3,
+      "title": "Create versioning policy document and bump version to 0.2.0",
+      "description": "Bump Cargo.toml version from 0.1.0 to 0.2.0. Create docs/VERSIONING.md containing: semver scheme definition (MAJOR.MINOR.PATCH per semver.org), what constitutes MAJOR/MINOR/PATCH for namer specifically, and a release checklist (update Cargo.toml, write user-facing PR titles, tag v<version>, push tag, verify CI, verify GitHub Release). Update docs/index.md to reference VERSIONING.md in the Core docs section.",
+      "files": ["Cargo.toml", "docs/VERSIONING.md", "docs/index.md"],
+      "done_when": "Cargo.toml version is 0.2.0. docs/VERSIONING.md exists with semver policy, MAJOR/MINOR/PATCH definitions, and release checklist. docs/index.md references VERSIONING.md. cargo build succeeds."
+    },
+    {
+      "id": 4,
+      "title": "Add auto-generated release notes to GitHub release workflow",
+      "description": "Add generate_release_notes: true to the softprops/action-gh-release step in .github/workflows/release.yml. Ensure the release notes process (auto-generated from PR titles) is documented in docs/VERSIONING.md as part of the release checklist.",
+      "files": [".github/workflows/release.yml", "docs/VERSIONING.md"],
+      "done_when": "release.yml includes generate_release_notes: true on the action-gh-release step. VERSIONING.md documents that release notes are auto-generated from PR titles and includes guidance on writing user-facing PR titles."
+    },
+    {
+      "id": 5,
+      "title": "Simplify README install commands to idempotent one-liners",
+      "description": "Replace the multi-step install instructions in README.md (curl, chmod, ./namer as separate commands) with idempotent one-liners for each platform. Each one-liner should check if namer is already on PATH (using 'which namer' or equivalent) and skip the download if so, then run namer. Pattern for Unix: 'which namer || (curl -L <url> -o /usr/local/bin/namer && chmod +x /usr/local/bin/namer) && namer'. Pattern for Windows: equivalent PowerShell idempotent check. The user should be able to press up-arrow and re-run without re-downloading. Keep the 'Build from source' section unchanged. Update the intro text for the Installation section to reflect the new one-liner approach.",
+      "files": ["README.md"],
+      "done_when": "Each platform install block in README.md is a single idempotent command that checks for existing namer binary before downloading. Running the command twice does not re-download. The command ends by invoking namer. Build-from-source section is unchanged. cargo fmt, clippy, and test all green (no code changes, but verify nothing broke)."
+    },
+    {
+      "id": 6,
+      "title": "Fix QA review findings: correct ARCHITECTURE.md factual errors and update stale README help output",
+      "description": "The QA review found factual errors in docs and stale CLI output in README. Read src/main.rs to determine the actual code signatures and types, then fix all discrepancies.\n\nCRITICAL fixes in docs/ARCHITECTURE.md:\n- Data model section says word lists are '1,250' entries each -- must be '777' to match actual code.\n- Data model says delimiter field type is 'Option<String>' -- actual code uses 'String' with default_value = \"\". Fix to match.\n- Data model says generate_name returns 'Vec<String>' -- actual code returns 'NameParts' struct. Fix to match.\n- CI/CD section says 'release notes from RELEASE_NOTES.md' -- actual workflow uses 'generate_release_notes: true' (auto-generated). Fix to match.\n\nWARNING fixes in README.md:\n- The --help example output is stale: it is missing the --number flag and the --delimiter description needs the [default: ] shown by clap. Run 'cargo run -- --help' to get the actual current output and replace the example block.\n- Review the Windows install one-liner for correctness. The current command downloads to the current directory and runs .\\namer.exe -- consider whether this is robust enough or needs a more standard install path.\n\nWARNING fixes in docs/ARCHITECTURE.md:\n- Scan for any other bullets that do not match the current codebase (e.g., stale descriptions, wrong function signatures, missing components).\n\nDo NOT change any application code in src/. This task is docs-only. Run cargo fmt, clippy, and test to verify nothing is broken after changes.",
+      "files": ["docs/ARCHITECTURE.md", "README.md"],
+      "done_when": "ARCHITECTURE.md data model section correctly says 777 entries, delimiter: String, NameParts return type, and auto-generated release notes. README --help example matches actual 'cargo run -- --help' output including --number flag. No other stale references remain. cargo fmt, clippy, and test all green."
+    },
+    {
+      "id": 7,
+      "title": "Final QA doc fixes: ARCHITECTURE.md source file description and README Windows one-liner note",
+      "description": "Two small doc-only fixes.\n\n1. In docs/ARCHITECTURE.md line 10, the text says 'Single binary, single source file (`src/main.rs`)'. This is now inaccurate because the binary is compiled from two source files: src/main.rs and src/words.rs. Update the bullet to reflect that the binary is compiled from two source files (src/main.rs and src/words.rs). Keep the 'Single binary' part -- just fix the 'single source file' claim.\n\n2. In README.md, the Windows (x86-64) install one-liner downloads namer.exe to the current directory and runs it locally. Do NOT change the command itself. Simply add a brief note (one sentence max) after the code block clarifying that the command downloads to the current directory and runs locally. Do not suggest installing to PATH or modifying the user's system.\n\nDo NOT touch any Rust source code. These are docs-only changes. Run cargo fmt, clippy, and test to confirm nothing is broken.",
+      "files": ["docs/ARCHITECTURE.md", "README.md"],
+      "done_when": "ARCHITECTURE.md no longer says 'single source file' -- it reflects two source files (main.rs and words.rs). README.md has a brief note after the Windows one-liner explaining it downloads to the current directory. No Rust source code changed. cargo fmt, clippy, and test all green."
+    },
+    {
+      "id": 8,
+      "title": "Add markdownlint to pre-commit hook and agent awareness",
+      "description": "Add markdownlint-cli2 to the project's quality gates and ensure agents are aware of markdown linting standards.\n\n1. **hooks/pre-commit**: After the existing cargo fmt and cargo clippy checks, add a markdownlint-cli2 check that lints all .md files: `npx markdownlint-cli2 '**/*.md'`. The check should run after the cargo checks and before the 'pre-commit checks passed' message.\n\n2. **.claude/agents/software-developer.md**: Add awareness that markdown files must pass markdownlint. When the SDE creates or modifies .md files, it must ensure blank lines around headings, blank lines around lists, and files end with a single newline. Add `npx markdownlint-cli2 '**/*.md'` to the quality gates it runs.\n\n3. **.claude/agents/principal-engineer.md**: Add awareness that exec plans and design docs are markdown and must pass markdownlint. Mention blank lines around headings/lists and single trailing newline.\n\n4. **CLAUDE.md quality gates section**: Add `npx markdownlint-cli2 '**/*.md'` alongside the existing cargo gates under both pre-commit and the Commands section.\n\n5. **docs/CONTRIBUTING.md coding standards section**: Add markdownlint as a coding standard -- all markdown files must pass markdownlint.\n\n6. **.markdownlint.json**: Create a config file in the project root for any rule customizations needed (start with default rules, customize only if specific rules conflict with project conventions).\n\nRun all quality gates after changes including `npx markdownlint-cli2 '**/*.md'` to verify all existing markdown files pass. Fix any existing markdown files that fail linting ONLY if the fixes are trivial (blank lines, trailing newlines). If existing files have complex failures, note them but do not fix -- report to the EM.",
+      "files": ["hooks/pre-commit", ".claude/agents/software-developer.md", ".claude/agents/principal-engineer.md", "CLAUDE.md", "docs/CONTRIBUTING.md", ".markdownlint.json"],
+      "done_when": "hooks/pre-commit includes markdownlint-cli2 check after cargo checks. software-developer.md and principal-engineer.md mention markdown linting awareness. CLAUDE.md quality gates section includes markdownlint. docs/CONTRIBUTING.md lists markdownlint as a standard. .markdownlint.json exists with project config. npx markdownlint-cli2 '**/*.md' passes on all repo markdown files. cargo fmt, clippy, and test all green."
+    }
+  ],
+  "completed_tasks": [1, 2, 3, 4, 5, 6, 7, 8],
+  "artifacts": {
+    "requirements": "docs/exec-plans/completed/2026-03-24-expanded-lists-bulk-gen-versioning.md",
+    "design": "docs/exec-plans/completed/2026-03-24-expanded-lists-bulk-gen-versioning.md",
+    "exec_plan": "docs/exec-plans/completed/2026-03-24-expanded-lists-bulk-gen-versioning.md"
+  },
+  "history": [
+    { "timestamp": "2026-03-24 00:00", "stage": "bootstrap", "note": "Feature initiated" },
+    { "timestamp": "2026-03-24 00:01", "stage": "discovery", "note": "Moving to discovery -- routing to product-manager" },
+    { "timestamp": "2026-03-24 00:02", "stage": "discovery", "note": "Exec plan written by product-manager -- requirements and acceptance criteria complete, open questions noted" },
+    { "timestamp": "2026-03-24 00:03", "stage": "design", "note": "Moving to design -- routing to principal-engineer" },
+    { "timestamp": "2026-03-24 00:04", "stage": "tasks", "note": "Moving to tasks -- EM breaking design into implementable tasks" },
+    { "timestamp": "2026-03-24 00:05", "stage": "implementation", "note": "Implementing Task 1: Extract word lists to src/words.rs with 1,250 entries each" },
+    { "timestamp": "2026-03-26 00:01", "stage": "implementation", "note": "Resumed feature. Word list target revised from 1,250 to 777 unique entries each. Task 1 updated and restarted. Exec plan and ARCHITECTURE.md updated to reflect new target." },
+    { "timestamp": "2026-03-26 00:02", "stage": "verification", "note": "Moving to verification -- routing to build-specialist to run all quality gates" },
+    { "timestamp": "2026-03-26 00:03", "stage": "review", "note": "Moving to review -- routing to quality-assurance for code review" },
+    { "timestamp": "2026-03-26 00:04", "stage": "implementation", "note": "Task 1 complete (verified and reviewed). Implementing Task 2: Add --number N flag for bulk name generation" },
+    { "timestamp": "2026-03-26 00:05", "stage": "implementation", "note": "Task 2 already fully implemented and tested (code + integration tests present). Marked complete. Implementing Task 3: Create versioning policy document and bump version to 0.2.0" },
+    { "timestamp": "2026-03-26 00:06", "stage": "implementation", "note": "Task 3 complete. Added Task 5 (simplify README install to idempotent one-liners). Implementing Task 4: Add auto-generated release notes to GitHub release workflow" },
+    { "timestamp": "2026-03-26 00:07", "stage": "implementation", "note": "Task 4 already complete (release.yml has generate_release_notes: true, VERSIONING.md documents process). Marked complete. Implementing Task 5: Simplify README install commands to idempotent one-liners" },
+    { "timestamp": "2026-03-26 00:08", "stage": "verification", "note": "Moving to verification -- routing to build-specialist to run all quality gates after Task 5 implementation" },
+    { "timestamp": "2026-03-26 00:09", "stage": "review", "note": "Moving to review -- routing to quality-assurance for final code review across all 5 tasks before acceptance" },
+    { "timestamp": "2026-03-26 00:10", "stage": "implementation", "note": "QA review complete. Added Task 6 to fix doc factual errors (ARCHITECTURE.md wrong counts/types/return type, stale README --help output). Routing to software-developer." },
+    { "timestamp": "2026-03-26 00:11", "stage": "review", "note": "Moving to review -- routing to quality-assurance for post-Task-6 review focusing on doc accuracy and overall feature correctness" },
+    { "timestamp": "2026-03-26 00:12", "stage": "implementation", "note": "QA review complete. Added Task 7 for final doc fixes (ARCHITECTURE.md source file description, README Windows one-liner note). Routing to software-developer." },
+    { "timestamp": "2026-03-26 00:13", "stage": "verification", "note": "Moving to verification -- routing to build-specialist to run all quality gates after Task 7 implementation" },
+    { "timestamp": "2026-03-26 00:14", "stage": "implementation", "note": "Task 7 marked complete. Added Task 8: Add markdownlint to pre-commit hook and agent awareness. Routing to software-developer." },
+    { "timestamp": "2026-03-26 00:15", "stage": "review", "note": "Moving to review -- routing to quality-assurance for focused review on Task 7 and Task 8 changes only" },
+    { "timestamp": "2026-03-26 00:16", "stage": "acceptance", "note": "All 8 tasks complete. Moving to acceptance -- routing to product-manager to validate all acceptance criteria." },
+    { "timestamp": "2026-03-26 00:17", "stage": "done", "note": "Feature complete. Exec plan archived to docs/exec-plans/completed/. All 8 tasks delivered across 7 areas of improvement." }
+  ]
+}

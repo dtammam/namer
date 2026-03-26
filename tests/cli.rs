@@ -74,3 +74,109 @@ fn help_flag_exits_successfully() {
         "expected usage info in --help output"
     );
 }
+
+#[test]
+fn number_flag_5_produces_exactly_5_lines() {
+    let output = namer()
+        .args(["--number", "5"])
+        .output()
+        .expect("failed to run namer");
+    assert!(output.status.success());
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let lines: Vec<&str> = stdout.lines().collect();
+    assert_eq!(lines.len(), 5, "expected 5 lines, got {}", lines.len());
+    for line in &lines {
+        assert!(!line.is_empty(), "unexpected empty line in output");
+    }
+}
+
+#[test]
+fn no_number_flag_produces_exactly_1_line() {
+    let output = namer().output().expect("failed to run namer");
+    assert!(output.status.success());
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let lines: Vec<&str> = stdout.lines().collect();
+    assert_eq!(lines.len(), 1, "expected 1 line, got {}", lines.len());
+}
+
+#[test]
+fn number_flag_1_produces_exactly_1_line() {
+    let output = namer()
+        .args(["--number", "1"])
+        .output()
+        .expect("failed to run namer");
+    assert!(output.status.success());
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let lines: Vec<&str> = stdout.lines().collect();
+    assert_eq!(lines.len(), 1, "expected 1 line, got {}", lines.len());
+}
+
+#[test]
+fn number_flag_0_exits_with_nonzero_status() {
+    let output = namer()
+        .args(["--number", "0"])
+        .output()
+        .expect("failed to run namer");
+    assert!(
+        !output.status.success(),
+        "expected non-zero exit for --number 0"
+    );
+}
+
+#[test]
+fn number_flag_1001_exits_with_nonzero_status() {
+    let output = namer()
+        .args(["--number", "1001"])
+        .output()
+        .expect("failed to run namer");
+    assert!(
+        !output.status.success(),
+        "expected non-zero exit for --number 1001"
+    );
+}
+
+#[test]
+fn number_flag_5_with_lower_produces_5_lowercase_lines() {
+    let output = namer()
+        .args(["--number", "5", "--lower"])
+        .output()
+        .expect("failed to run namer");
+    assert!(output.status.success());
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let lines: Vec<&str> = stdout.lines().collect();
+    assert_eq!(lines.len(), 5, "expected 5 lines, got {}", lines.len());
+    for line in &lines {
+        assert!(
+            line.chars().all(|c| c.is_ascii_lowercase()),
+            "line {line:?} is not all lowercase"
+        );
+    }
+}
+
+#[test]
+fn number_flag_5_with_delimiter_produces_5_hyphen_delimited_lines() {
+    let output = namer()
+        .args(["--number", "5", "--delimiter", "-"])
+        .output()
+        .expect("failed to run namer");
+    assert!(output.status.success());
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let lines: Vec<&str> = stdout.lines().collect();
+    assert_eq!(lines.len(), 5, "expected 5 lines, got {}", lines.len());
+    for line in &lines {
+        assert!(
+            line.contains('-'),
+            "line {line:?} does not contain hyphen delimiter"
+        );
+    }
+}
+
+#[test]
+fn help_output_contains_number_flag() {
+    let output = namer().arg("--help").output().expect("failed to run namer");
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(
+        stdout.contains("--number"),
+        "--help output does not mention --number"
+    );
+}
