@@ -15,24 +15,43 @@ namer is a command-line tool that generates random two-word names by combining a
 
 ## Installation
 
-Paste the one-liner for your platform — it checks whether `namer` is already installed and skips the download if so. No dependencies required.
+Paste the snippet for your platform — it checks whether `namer` is already installed and skips the download if so. No dependencies required.
 
 ### macOS (Apple Silicon)
 
 ```sh
-which namer || (sudo curl -L https://github.com/dtammam/namer/releases/latest/download/namer-aarch64-apple-darwin -o /usr/local/bin/namer && sudo chmod +x /usr/local/bin/namer) && namer
+which namer || (  # Skip if already installed
+  # /usr/local/bin is root-owned on macOS, so sudo is required.
+  # To avoid sudo: install to ~/.local/bin and add it to your PATH.
+  sudo mkdir -p /usr/local/bin &&    # Ensure install directory exists
+  sudo curl -L https://github.com/dtammam/namer/releases/latest/download/namer-aarch64-apple-darwin \
+    -o /usr/local/bin/namer &&       # Download the binary
+  sudo chmod +x /usr/local/bin/namer # Make it executable
+) && namer  # Generate a name
 ```
 
 ### macOS (Intel)
 
 ```sh
-which namer || (sudo curl -L https://github.com/dtammam/namer/releases/latest/download/namer-x86_64-apple-darwin -o /usr/local/bin/namer && sudo chmod +x /usr/local/bin/namer) && namer
+which namer || (  # Skip if already installed
+  # /usr/local/bin is root-owned on macOS, so sudo is required.
+  # To avoid sudo: install to ~/.local/bin and add it to your PATH.
+  sudo mkdir -p /usr/local/bin &&    # Ensure install directory exists
+  sudo curl -L https://github.com/dtammam/namer/releases/latest/download/namer-x86_64-apple-darwin \
+    -o /usr/local/bin/namer &&       # Download the binary
+  sudo chmod +x /usr/local/bin/namer # Make it executable
+) && namer  # Generate a name
 ```
 
 ### Linux (x86-64)
 
 ```sh
-which namer || (sudo curl -L https://github.com/dtammam/namer/releases/latest/download/namer-x86_64-unknown-linux-gnu -o /usr/local/bin/namer && sudo chmod +x /usr/local/bin/namer) && namer
+which namer || (  # Skip if already installed
+  mkdir -p ~/.local/bin &&           # Create user bin directory if absent
+  curl -L https://github.com/dtammam/namer/releases/latest/download/namer-x86_64-unknown-linux-gnu \
+    -o ~/.local/bin/namer &&         # Download the binary
+  chmod +x ~/.local/bin/namer        # Make it executable
+) && ~/.local/bin/namer  # Generate a name
 ```
 
 ### Windows (x86-64)
