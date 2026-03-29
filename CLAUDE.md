@@ -31,11 +31,11 @@ visible to the user — no intermediary summaries, no copy-paste.
 | Agent | What it does | How to run it |
 |-------|-------------|---------------|
 | `engineering-manager` | Tracks feature state, routes work to specialists, manages stage transitions | Invoked automatically by `/commands` |
-| `product-manager` | Gathers requirements + acceptance criteria (Discovery), validates delivered work (Acceptance) | VS Code task **"Run Product Manager"** |
-| `principal-engineer` | Reads requirements and codebase, produces technical design with approach, risks, alternatives | VS Code task **"Run Principal Engineer"** |
-| `software-developer` | Implements ONE task at a time — writes code, tests, runs quality checks | VS Code task **"Run Software Developer"** |
-| `build-specialist` | Runs build + test + lint + format checks, reports pass/fail (never fixes code) | VS Code task **"Run Build Specialist"** |
-| `quality-assurance` | Reviews code for correctness, security, performance, standards compliance (never fixes code) | VS Code task **"Run Quality Assurance"** |
+| `product-manager` | Gathers requirements + acceptance criteria (Discovery), validates delivered work (Acceptance) | VS Code task **"Run Product Manager"** or `/run-pm` |
+| `principal-engineer` | Reads requirements and codebase, produces technical design with approach, risks, alternatives | VS Code task **"Run Principal Engineer"** or `/run-pe` |
+| `software-developer` | Implements ONE task at a time — writes code, tests, runs quality checks | VS Code task **"Run Software Developer"** or `/run-sde` |
+| `build-specialist` | Runs build + test + lint + format checks, reports pass/fail (never fixes code) | VS Code task **"Run Build Specialist"** or `/run-build` |
+| `quality-assurance` | Reviews code for correctness, security, performance, standards compliance (never fixes code) | VS Code task **"Run Quality Assurance"** or `/run-qa` |
 
 ### Commands (`.claude/commands/`)
 
@@ -60,6 +60,28 @@ Each command moves the feature one stage forward. Run them in order.
 Each specialist agent has a corresponding VS Code task that spawns a fresh
 Claude Code session reading from `.state/inbox/<agent-name>.md`. Run via
 **Terminal → Run Task…** in VS Code.
+
+### Mobile workflow (Session 2)
+
+For environments without VS Code (e.g. Happy Coder on mobile), specialist agents
+can be invoked via shell scripts or slash commands instead of VS Code tasks.
+
+**Two-session model:**
+
+- **Session 1 (EM):** Uses existing slash commands (`/kickoff`, `/discover`, etc.) — unchanged.
+- **Session 2 (Specialist workbench):** Runs specialist agents via `/run-*` commands.
+
+| Slash command | Shell script | Equivalent VS Code task |
+|---------------|-------------|------------------------|
+| `/run-pm` | `scripts/run-product-manager.sh` | Run Product Manager |
+| `/run-pe` | `scripts/run-principal-engineer.sh` | Run Principal Engineer |
+| `/run-sde` | `scripts/run-software-developer.sh` | Run Software Developer |
+| `/run-build` | `scripts/run-build-specialist.sh` | Run Build Specialist |
+| `/run-qa` | `scripts/run-quality-assurance.sh` | Run Quality Assurance |
+
+Each script verifies the inbox file exists and is non-empty before invoking
+`claude --agent <name> @.state/inbox/<name>.md`. If the inbox is missing,
+it means the EM hasn't routed work yet — run the appropriate command in Session 1 first.
 
 ### Shared state
 
