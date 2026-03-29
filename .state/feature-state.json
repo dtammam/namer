@@ -1,45 +1,17 @@
 {
-  "feature_id": "readme-install-fix-comments",
-  "feature_name": "Fix README install one-liners: sudo-free install path and inline comments",
-  "stage": "done",
-  "created_at": "2026-03-27",
-  "updated_at": "2026-03-27T00:13",
+  "feature_id": "mobile-workflow-agent-scripts",
+  "feature_name": "CLI-invocable specialist agent scripts + slash commands for mobile workflow",
+  "stage": "bootstrap",
+  "created_at": "2026-03-29",
+  "updated_at": "2026-03-29",
   "tasks": [],
-  "completed_tasks": [
-    {
-      "id": 2,
-      "title": "QA remediation: Linux PATH fix, macOS mkdir -p, whitespace alignment",
-      "description": "Three fixes from QA review: (1) In the Linux block, change the final `namer` invocation on the closing line from bare `namer` to `~/.local/bin/namer` so it works even when ~/.local/bin is not yet in PATH for the current session. (2) In BOTH macOS blocks (Apple Silicon and Intel), add `sudo mkdir -p /usr/local/bin &&` as the first command inside the subshell (after the skip-if-installed line), with a comment `# Ensure install directory exists`. This fixes a real bug: on a fresh Apple Silicon Mac, /usr/local/bin may not exist. (3) Align trailing comment spacing consistently across all three Unix blocks so the `#` comments start at the same column where feasible.",
-      "status": "complete",
-      "files": ["README.md"]
-    },
-    {
-      "id": 1,
-      "title": "Replace three Unix install blocks and update introductory prose in README.md",
-      "description": "In README.md, replace the three single-line Unix install commands (macOS Apple Silicon, macOS Intel, Linux x86-64) with the multi-line commented shell blocks specified in the Design section of the exec plan. Update the introductory prose from 'one-liner' to 'snippet'. Verify with bash -n that each block is syntactically valid shell. Confirm Windows and build-from-source blocks are untouched. Run npx markdownlint-cli2 '**/*.md' and fix any lint errors.",
-      "status": "complete",
-      "files": ["README.md"]
-    }
-  ],
+  "completed_tasks": [],
   "artifacts": {
-    "requirements": "docs/exec-plans/completed/2026-03-27-readme-install-fix-comments.md",
-    "design": "docs/exec-plans/completed/2026-03-27-readme-install-fix-comments.md",
-    "exec_plan": "docs/exec-plans/completed/2026-03-27-readme-install-fix-comments.md"
+    "requirements": null,
+    "design": null,
+    "exec_plan": null
   },
   "history": [
-    { "timestamp": "2026-03-27 00:00", "stage": "bootstrap", "note": "Feature initiated: fix README install one-liners to ensure /usr/local/bin exists before download, and add inline comments explaining each step for all platforms" },
-    { "timestamp": "2026-03-27 00:01", "stage": "discovery", "note": "Moved to discovery. PM to finalize install path decision, gather requirements, and write exec plan." },
-    { "timestamp": "2026-03-27 00:02", "stage": "discovery", "note": "Discovery complete. Exec plan written. Install path decision: ~/.local/bin (sudo-free). Acceptance criteria defined. Awaiting /design." },
-    { "timestamp": "2026-03-27 00:03", "stage": "design", "note": "Moved to design. PE to produce design section in exec plan. Docs-only change to README.md." },
-    { "timestamp": "2026-03-27 00:04", "stage": "tasks", "note": "Moved to tasks. Single task created: replace three Unix install blocks and update intro prose in README.md." },
-    { "timestamp": "2026-03-27 00:05", "stage": "implementation", "note": "Moved to implementation. Task 1: replace three Unix install blocks and update intro prose in README.md." },
-    { "timestamp": "2026-03-27 00:06", "stage": "implementation", "note": "Task 1 complete. README.md: replaced macOS Apple Silicon, macOS Intel, and Linux x86-64 install blocks with multi-line commented snippets (sudo-free path on Linux via ~/.local/bin; sudo with explanation on macOS). Updated intro prose 'one-liner' -> 'snippet'. Windows and build-from-source blocks untouched. bash -n passed on all three blocks; markdownlint 0 errors." },
-    { "timestamp": "2026-03-27 00:07", "stage": "review", "note": "Moved to review. QA to review README.md shell snippets for correctness on fresh macOS/Linux, verify mkdir -p fix for macOS /usr/local/bin handling, and check standards compliance." },
-    { "timestamp": "2026-03-27 00:08", "stage": "implementation", "note": "QA returned REQUEST CHANGES with 3 fixes. Created task 2 for remediation: (1) Linux final invocation must use full path ~/.local/bin/namer, (2) macOS blocks need sudo mkdir -p /usr/local/bin back, (3) align trailing comment whitespace across all three blocks." },
-    { "timestamp": "2026-03-27 00:09", "stage": "implementation", "note": "Task 2 complete. README.md: (1) Linux closing line changed from `namer` to `~/.local/bin/namer`. (2) Both macOS blocks gained `sudo mkdir -p /usr/local/bin &&    # Ensure install directory exists` as first command inside subshell. (3) Trailing comment whitespace aligned to consistent column across all three Unix blocks. bash -n passed on all three blocks; markdownlint 0 errors." },
-    { "timestamp": "2026-03-27 00:10", "stage": "review", "note": "Moved to re-review. QA to verify three fixes from previous review are correctly applied: (1) Linux full path ~/.local/bin/namer on final invocation, (2) macOS sudo mkdir -p /usr/local/bin present, (3) whitespace alignment consistent." },
-    { "timestamp": "2026-03-27 00:11", "stage": "acceptance", "note": "All tasks complete (2/2). Moved to acceptance. PM to validate every acceptance criterion against current README.md." },
-    { "timestamp": "2026-03-27 00:12", "stage": "acceptance", "note": "PM rejected AC-1 and AC-2 because exec plan said 'no mkdir -p on macOS'. Design assumption was wrong: /usr/local/bin is NOT guaranteed on fresh macOS (especially Apple Silicon). Corrected exec plan: R1, AC-1, AC-2 now REQUIRE sudo mkdir -p /usr/local/bin. Design section and exact blocks updated. Decision log entry added. Re-running acceptance with corrected criteria." },
-    { "timestamp": "2026-03-27 00:13", "stage": "done", "note": "Feature complete. All 8 acceptance criteria verified PASS (manual validation). Exec plan moved to docs/exec-plans/completed/. No tech debt created." }
+    { "timestamp": "2026-03-29 00:00", "stage": "bootstrap", "note": "Feature initiated: CLI-invocable specialist agent scripts and slash commands for mobile workflow via Happy Coder. Parallel invocation path alongside existing VS Code tasks." }
   ]
 }
