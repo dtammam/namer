@@ -3,7 +3,7 @@
   "feature_name": "Refactor word lists and add clap-driven 'things' categories",
   "stage": "implementation",
   "created_at": "2026-04-07",
-  "updated_at": "2026-04-07T00:08",
+  "updated_at": "2026-04-07T00:10",
   "tasks": [
     {
       "id": 1,
@@ -55,7 +55,7 @@
       "definition_of_done": "README shows --things usage. ARCHITECTURE.md reflects new module structure. RELIABILITY.md references updated correctly. npx markdownlint-cli2 passes on all changed files."
     }
   ],
-  "completed_tasks": [1, 2],
+  "completed_tasks": [1, 2, 3],
   "artifacts": {
     "requirements": "docs/exec-plans/active/2026-04-07-refactor-word-lists-things-categories.md",
     "design": "docs/exec-plans/active/2026-04-07-refactor-word-lists-things-categories.md",
@@ -71,6 +71,8 @@
     { "timestamp": "2026-04-07 00:06", "stage": "implementation", "note": "Task 1 completed. words/ module created with adjectives.rs (316 entries) and objects.rs (backward-compat NOUNS export). All quality gates passing." },
     { "timestamp": "2026-04-07 00:07", "stage": "implementation", "note": "Task 2 started: Add ThingCategory enum, --things CLI arg, and update generate_name signature." },
     { "timestamp": "2026-04-07 00:08", "stage": "implementation", "note": "Task 2 completed. ThingCategory enum with clap::ValueEnum, --things CLI arg, generate_name accepts nouns slice, NOUNS backward-compat removed. All quality gates passing." },
-    { "timestamp": "2026-04-07 00:08", "stage": "implementation", "note": "Task 3 started: Add produce and animals word lists." }
+    { "timestamp": "2026-04-07 00:08", "stage": "implementation", "note": "Task 3 started: Add produce and animals word lists." },
+    { "timestamp": "2026-04-07 00:09", "stage": "implementation", "note": "Task 3 completed. Created produce.rs and animals.rs, wired up mod.rs re-exports, updated ThingCategory::nouns() to return real slices. All quality gates passing." },
+    { "timestamp": "2026-04-07 00:10", "stage": "implementation", "note": "Task 4 started: Replace objects word list with user-provided curated list." }
   ]
 }
