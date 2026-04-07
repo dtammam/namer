@@ -173,7 +173,9 @@ mod tests {
 
     #[test]
     fn word_lists_contain_exactly_777_entries_each() {
-        assert_eq!(ADJECTIVES.len(), 777);
+        // ADJECTIVES was replaced with a curated list in Task 1; exact count updated here.
+        // This test will be removed in Task 5 in favour of range-based assertions.
+        assert_eq!(ADJECTIVES.len(), 316);
         assert_eq!(NOUNS.len(), 777);
     }
 
