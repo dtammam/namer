@@ -1,9 +1,9 @@
 {
   "feature_id": "refactor-word-lists-things-categories",
   "feature_name": "Refactor word lists and add clap-driven 'things' categories",
-  "stage": "acceptance",
+  "stage": "done",
   "created_at": "2026-04-07",
-  "updated_at": "2026-04-07T00:21",
+  "updated_at": "2026-04-07T00:22",
   "tasks": [
     {
       "id": 1,
@@ -57,9 +57,9 @@
   ],
   "completed_tasks": [1, 2, 3, 4, 5, 6, 7],
   "artifacts": {
-    "requirements": "docs/exec-plans/active/2026-04-07-refactor-word-lists-things-categories.md",
-    "design": "docs/exec-plans/active/2026-04-07-refactor-word-lists-things-categories.md",
-    "exec_plan": "docs/exec-plans/active/2026-04-07-refactor-word-lists-things-categories.md"
+    "requirements": "docs/exec-plans/completed/2026-04-07-refactor-word-lists-things-categories.md",
+    "design": "docs/exec-plans/completed/2026-04-07-refactor-word-lists-things-categories.md",
+    "exec_plan": "docs/exec-plans/completed/2026-04-07-refactor-word-lists-things-categories.md"
   },
   "history": [
     { "timestamp": "2026-04-07 00:00", "stage": "bootstrap", "note": "Feature initiated: Refactor word lists (new curated adjectives ~400, objects ~240), add clap-driven 'things' argument with categories (objects, produce, animals), remove exact word-count tests." },
@@ -87,6 +87,7 @@
     { "timestamp": "2026-04-07 00:18", "stage": "verification", "note": "Moving to verification. Build specialist to run all quality gates." },
     { "timestamp": "2026-04-07 00:19", "stage": "acceptance", "note": "All 7 tasks complete and verified. Moving to acceptance. PM to validate every acceptance criterion." },
     { "timestamp": "2026-04-07 00:20", "stage": "implementation", "note": "Acceptance found ADJECTIVES size test mismatch. User revised acceptance criterion minimum from 350 to 300. Moving back to implementation to update test assertion and exec plan." },
-    { "timestamp": "2026-04-07 00:21", "stage": "acceptance", "note": "Re-run acceptance after ADJECTIVES range fix (300-500). All 7 tasks complete. PM to validate every acceptance criterion." }
+    { "timestamp": "2026-04-07 00:21", "stage": "acceptance", "note": "Re-run acceptance after ADJECTIVES range fix (300-500). All 7 tasks complete. PM to validate every acceptance criterion." },
+    { "timestamp": "2026-04-07 00:22", "stage": "done", "note": "Feature complete. All 7 tasks implemented, reviewed, verified, and accepted. Exec plan archived to docs/exec-plans/completed/." }
   ]
 }

@@ -144,4 +144,4 @@ npx markdownlint-cli2 '**/*.md'
 ## Active work
 
 Active exec plans: (none)
-Completed plans: `docs/exec-plans/completed/2026-03-22-namer-mvp.md`, `docs/exec-plans/completed/2026-03-23-output-formatting-flags.md`, `docs/exec-plans/completed/2026-03-23-release-ci-branding-readme.md`, `docs/exec-plans/completed/2026-03-24-readme-refinement.md`, `docs/exec-plans/completed/2026-03-24-expanded-lists-bulk-gen-versioning.md`, `docs/exec-plans/completed/2026-03-27-readme-install-fix-comments.md`
+Completed plans: `docs/exec-plans/completed/2026-03-22-namer-mvp.md`, `docs/exec-plans/completed/2026-03-23-output-formatting-flags.md`, `docs/exec-plans/completed/2026-03-23-release-ci-branding-readme.md`, `docs/exec-plans/completed/2026-03-24-readme-refinement.md`, `docs/exec-plans/completed/2026-03-24-expanded-lists-bulk-gen-versioning.md`, `docs/exec-plans/completed/2026-03-27-readme-install-fix-comments.md`, `docs/exec-plans/completed/2026-04-07-refactor-word-lists-things-categories.md`
