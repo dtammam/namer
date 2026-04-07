@@ -26,6 +26,16 @@ impl ThingCategory {
     }
 }
 
+impl std::fmt::Display for ThingCategory {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Objects => write!(f, "objects"),
+            Self::Produce => write!(f, "produce"),
+            Self::Animals => write!(f, "animals"),
+        }
+    }
+}
+
 /// Generates a random name from a curated list of adjectives and nouns.
 ///
 /// By default the output is ALL CAPS with no delimiter between words.
@@ -46,7 +56,7 @@ struct Cli {
     number: u32,
 
     /// Which noun category to draw from.
-    #[arg(long, default_value = "objects", value_enum)]
+    #[arg(long, default_value_t = ThingCategory::Objects, value_enum)]
     things: ThingCategory,
 }
 
@@ -68,6 +78,7 @@ pub enum Casing {
 /// The returned parts are in the original lowercase form from the word lists.
 /// No formatting is applied.
 pub fn generate_name(rng: &mut impl Rng, nouns: &[&str]) -> NameParts {
+    debug_assert!(!nouns.is_empty());
     let adjective = ADJECTIVES[rng.random_range(0..ADJECTIVES.len())];
     let noun = nouns[rng.random_range(0..nouns.len())];
     NameParts {
@@ -143,12 +154,12 @@ mod tests {
 
     #[test]
     fn thing_category_produce_returns_produce_list() {
-        assert!(!ThingCategory::Produce.nouns().is_empty());
+        assert_eq!(ThingCategory::Produce.nouns(), words::PRODUCE);
     }
 
     #[test]
     fn thing_category_animals_returns_animals_list() {
-        assert!(!ThingCategory::Animals.nouns().is_empty());
+        assert_eq!(ThingCategory::Animals.nouns(), words::ANIMALS);
     }
 
     fn parts(adj: &str, noun: &str) -> NameParts {
@@ -217,8 +228,8 @@ mod tests {
     #[test]
     fn word_lists_fall_within_expected_size_ranges() {
         assert!(
-            (250..=400).contains(&ADJECTIVES.len()),
-            "ADJECTIVES has {} entries, expected 250–400",
+            (300..=350).contains(&ADJECTIVES.len()),
+            "ADJECTIVES has {} entries, expected 300–350",
             ADJECTIVES.len()
         );
         assert!(
@@ -310,6 +321,32 @@ mod tests {
         assert!(
             adj_animals_overlap.is_empty(),
             "words appear in both ADJECTIVES and ANIMALS: {adj_animals_overlap:?}"
+        );
+    }
+
+    #[test]
+    fn noun_categories_have_no_cross_list_overlap() {
+        let obj_set: HashSet<&str> = OBJECTS.iter().copied().collect();
+        let produce_set: HashSet<&str> = PRODUCE.iter().copied().collect();
+        let animals_set: HashSet<&str> = ANIMALS.iter().copied().collect();
+
+        let obj_produce_overlap: Vec<&str> = obj_set.intersection(&produce_set).copied().collect();
+        assert!(
+            obj_produce_overlap.is_empty(),
+            "words appear in both OBJECTS and PRODUCE: {obj_produce_overlap:?}"
+        );
+
+        let obj_animals_overlap: Vec<&str> = obj_set.intersection(&animals_set).copied().collect();
+        assert!(
+            obj_animals_overlap.is_empty(),
+            "words appear in both OBJECTS and ANIMALS: {obj_animals_overlap:?}"
+        );
+
+        let produce_animals_overlap: Vec<&str> =
+            produce_set.intersection(&animals_set).copied().collect();
+        assert!(
+            produce_animals_overlap.is_empty(),
+            "words appear in both PRODUCE and ANIMALS: {produce_animals_overlap:?}"
         );
     }
 }

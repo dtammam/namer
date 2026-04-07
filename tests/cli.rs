@@ -227,13 +227,19 @@ fn things_flag_animals_produces_output() {
 
 #[test]
 fn things_flag_defaults_to_objects() {
-    // Running with no --things flag should succeed and produce output (default is objects).
+    // Running with no --things flag should succeed and produce output in the default
+    // ALL CAPS no-delimiter format, confirming the Objects category is active.
     let output = namer().output().expect("failed to run namer");
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
+    let name = stdout.trim();
     assert!(
-        !stdout.trim().is_empty(),
+        !name.is_empty(),
         "expected non-empty output when --things is omitted (default objects)"
+    );
+    assert!(
+        name.chars().all(|c| c.is_ascii_uppercase()),
+        "expected all-caps output for default objects category, got: {name}"
     );
 }
 
