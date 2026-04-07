@@ -20,8 +20,8 @@ impl ThingCategory {
     pub fn nouns(&self) -> &'static [&'static str] {
         match self {
             Self::Objects => words::OBJECTS,
-            Self::Produce => &[],
-            Self::Animals => &[],
+            Self::Produce => words::PRODUCE,
+            Self::Animals => words::ANIMALS,
         }
     }
 }
@@ -142,13 +142,13 @@ mod tests {
     }
 
     #[test]
-    fn thing_category_produce_returns_empty_slice() {
-        assert!(ThingCategory::Produce.nouns().is_empty());
+    fn thing_category_produce_returns_produce_list() {
+        assert!(!ThingCategory::Produce.nouns().is_empty());
     }
 
     #[test]
-    fn thing_category_animals_returns_empty_slice() {
-        assert!(ThingCategory::Animals.nouns().is_empty());
+    fn thing_category_animals_returns_animals_list() {
+        assert!(!ThingCategory::Animals.nouns().is_empty());
     }
 
     fn parts(adj: &str, noun: &str) -> NameParts {
