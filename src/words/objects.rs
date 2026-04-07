@@ -780,6 +780,3 @@ pub(crate) const OBJECTS: &[&str] = &[
     "meadow",
     "river",
 ];
-
-/// Backward-compatible alias for OBJECTS. Will be removed in Task 2.
-pub(crate) const NOUNS: &[&str] = OBJECTS;

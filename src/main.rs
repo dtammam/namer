@@ -2,7 +2,29 @@ mod words;
 
 use clap::Parser;
 use rand::Rng;
-use words::{ADJECTIVES, NOUNS};
+use words::ADJECTIVES;
+
+/// Noun category for name generation.
+#[derive(Clone, Copy, clap::ValueEnum)]
+pub enum ThingCategory {
+    /// Everyday objects (default).
+    Objects,
+    /// Fruits, vegetables, and other produce.
+    Produce,
+    /// Animals from around the world.
+    Animals,
+}
+
+impl ThingCategory {
+    /// Returns the noun word list for this category.
+    pub fn nouns(&self) -> &'static [&'static str] {
+        match self {
+            Self::Objects => words::OBJECTS,
+            Self::Produce => &[],
+            Self::Animals => &[],
+        }
+    }
+}
 
 /// Generates a random name from a curated list of adjectives and nouns.
 ///
@@ -22,6 +44,10 @@ struct Cli {
     /// Number of names to generate (1-1000).
     #[arg(long, default_value_t = 1, value_parser = clap::value_parser!(u32).range(1..=1000))]
     number: u32,
+
+    /// Which noun category to draw from.
+    #[arg(long, default_value = "objects", value_enum)]
+    things: ThingCategory,
 }
 
 /// The two components of a generated name: an adjective and a noun.
@@ -37,13 +63,13 @@ pub enum Casing {
     Lower,
 }
 
-/// Picks one random adjective and one random noun.
+/// Picks one random adjective and one random noun from the provided slice.
 ///
 /// The returned parts are in the original lowercase form from the word lists.
 /// No formatting is applied.
-pub fn generate_name(rng: &mut impl Rng) -> NameParts {
+pub fn generate_name(rng: &mut impl Rng, nouns: &[&str]) -> NameParts {
     let adjective = ADJECTIVES[rng.random_range(0..ADJECTIVES.len())];
-    let noun = NOUNS[rng.random_range(0..NOUNS.len())];
+    let noun = nouns[rng.random_range(0..nouns.len())];
     NameParts {
         adjective: adjective.to_string(),
         noun: noun.to_string(),
@@ -69,23 +95,25 @@ fn main() {
     } else {
         Casing::Upper
     };
+    let nouns = cli.things.nouns();
     for _ in 0..cli.number {
-        let parts = generate_name(&mut rng);
+        let parts = generate_name(&mut rng, nouns);
         println!("{}", format_name(&parts, casing, &cli.delimiter));
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{Casing, NameParts, format_name, generate_name};
-    use crate::words::{ADJECTIVES, NOUNS};
+    use super::{Casing, NameParts, ThingCategory, format_name, generate_name};
+    use crate::words;
+    use crate::words::ADJECTIVES;
     use rand::{SeedableRng, rngs::SmallRng};
     use std::collections::HashSet;
 
     #[test]
     fn generate_name_returns_lowercase_adjective_and_noun() {
         let mut rng = SmallRng::seed_from_u64(42);
-        let parts = generate_name(&mut rng);
+        let parts = generate_name(&mut rng, words::OBJECTS);
         assert!(
             !parts.adjective.is_empty() && parts.adjective.chars().all(|c| c.is_ascii_lowercase())
         );
@@ -95,17 +123,32 @@ mod tests {
     #[test]
     fn generate_name_picks_from_word_lists() {
         let mut rng = SmallRng::seed_from_u64(42);
-        let parts = generate_name(&mut rng);
+        let parts = generate_name(&mut rng, words::OBJECTS);
         assert!(ADJECTIVES.contains(&parts.adjective.as_str()));
-        assert!(NOUNS.contains(&parts.noun.as_str()));
+        assert!(words::OBJECTS.contains(&parts.noun.as_str()));
     }
 
     #[test]
     fn generate_name_is_deterministic_for_same_seed() {
-        let a = generate_name(&mut SmallRng::seed_from_u64(42));
-        let b = generate_name(&mut SmallRng::seed_from_u64(42));
+        let a = generate_name(&mut SmallRng::seed_from_u64(42), words::OBJECTS);
+        let b = generate_name(&mut SmallRng::seed_from_u64(42), words::OBJECTS);
         assert_eq!(a.adjective, b.adjective);
         assert_eq!(a.noun, b.noun);
+    }
+
+    #[test]
+    fn thing_category_objects_returns_objects_list() {
+        assert_eq!(ThingCategory::Objects.nouns(), words::OBJECTS);
+    }
+
+    #[test]
+    fn thing_category_produce_returns_empty_slice() {
+        assert!(ThingCategory::Produce.nouns().is_empty());
+    }
+
+    #[test]
+    fn thing_category_animals_returns_empty_slice() {
+        assert!(ThingCategory::Animals.nouns().is_empty());
     }
 
     fn parts(adj: &str, noun: &str) -> NameParts {
@@ -176,7 +219,7 @@ mod tests {
         // ADJECTIVES was replaced with a curated list in Task 1; exact count updated here.
         // This test will be removed in Task 5 in favour of range-based assertions.
         assert_eq!(ADJECTIVES.len(), 316);
-        assert_eq!(NOUNS.len(), 777);
+        assert_eq!(words::OBJECTS.len(), 777);
     }
 
     #[test]
@@ -187,7 +230,7 @@ mod tests {
                 "adjective {word:?} contains non-lowercase-ASCII or is empty"
             );
         }
-        for word in NOUNS {
+        for word in words::OBJECTS {
             assert!(
                 !word.is_empty() && word.bytes().all(|b| b.is_ascii_lowercase()),
                 "noun {word:?} contains non-lowercase-ASCII or is empty"
@@ -198,7 +241,7 @@ mod tests {
     #[test]
     fn word_lists_have_no_duplicates_and_no_cross_list_overlap() {
         let adj_set: HashSet<&str> = ADJECTIVES.iter().copied().collect();
-        let noun_set: HashSet<&str> = NOUNS.iter().copied().collect();
+        let noun_set: HashSet<&str> = words::OBJECTS.iter().copied().collect();
 
         assert_eq!(
             adj_set.len(),
@@ -207,7 +250,7 @@ mod tests {
         );
         assert_eq!(
             noun_set.len(),
-            NOUNS.len(),
+            words::OBJECTS.len(),
             "nouns list contains duplicates"
         );
 
