@@ -106,7 +106,7 @@ fn main() {
 mod tests {
     use super::{Casing, NameParts, ThingCategory, format_name, generate_name};
     use crate::words;
-    use crate::words::ADJECTIVES;
+    use crate::words::{ADJECTIVES, ANIMALS, OBJECTS, PRODUCE};
     use rand::{SeedableRng, rngs::SmallRng};
     use std::collections::HashSet;
 
@@ -215,11 +215,27 @@ mod tests {
     }
 
     #[test]
-    fn word_lists_contain_exactly_777_entries_each() {
-        // ADJECTIVES was replaced with a curated list in Task 1; exact count updated here.
-        // This test will be removed in Task 5 in favour of range-based assertions.
-        assert_eq!(ADJECTIVES.len(), 316);
-        assert_eq!(words::OBJECTS.len(), 777);
+    fn word_lists_fall_within_expected_size_ranges() {
+        assert!(
+            (250..=400).contains(&ADJECTIVES.len()),
+            "ADJECTIVES has {} entries, expected 250–400",
+            ADJECTIVES.len()
+        );
+        assert!(
+            (200..=300).contains(&OBJECTS.len()),
+            "OBJECTS has {} entries, expected 200–300",
+            OBJECTS.len()
+        );
+        assert!(
+            (150..=250).contains(&PRODUCE.len()),
+            "PRODUCE has {} entries, expected 150–250",
+            PRODUCE.len()
+        );
+        assert!(
+            (200..=300).contains(&ANIMALS.len()),
+            "ANIMALS has {} entries, expected 200–300",
+            ANIMALS.len()
+        );
     }
 
     #[test]
@@ -230,10 +246,22 @@ mod tests {
                 "adjective {word:?} contains non-lowercase-ASCII or is empty"
             );
         }
-        for word in words::OBJECTS {
+        for word in OBJECTS {
             assert!(
                 !word.is_empty() && word.bytes().all(|b| b.is_ascii_lowercase()),
-                "noun {word:?} contains non-lowercase-ASCII or is empty"
+                "objects entry {word:?} contains non-lowercase-ASCII or is empty"
+            );
+        }
+        for word in PRODUCE {
+            assert!(
+                !word.is_empty() && word.bytes().all(|b| b.is_ascii_lowercase()),
+                "produce entry {word:?} contains non-lowercase-ASCII or is empty"
+            );
+        }
+        for word in ANIMALS {
+            assert!(
+                !word.is_empty() && word.bytes().all(|b| b.is_ascii_lowercase()),
+                "animals entry {word:?} contains non-lowercase-ASCII or is empty"
             );
         }
     }
@@ -241,23 +269,47 @@ mod tests {
     #[test]
     fn word_lists_have_no_duplicates_and_no_cross_list_overlap() {
         let adj_set: HashSet<&str> = ADJECTIVES.iter().copied().collect();
-        let noun_set: HashSet<&str> = words::OBJECTS.iter().copied().collect();
+        let obj_set: HashSet<&str> = OBJECTS.iter().copied().collect();
+        let produce_set: HashSet<&str> = PRODUCE.iter().copied().collect();
+        let animals_set: HashSet<&str> = ANIMALS.iter().copied().collect();
 
         assert_eq!(
             adj_set.len(),
             ADJECTIVES.len(),
-            "adjectives list contains duplicates"
+            "ADJECTIVES list contains duplicates"
         );
         assert_eq!(
-            noun_set.len(),
-            words::OBJECTS.len(),
-            "nouns list contains duplicates"
+            obj_set.len(),
+            OBJECTS.len(),
+            "OBJECTS list contains duplicates"
+        );
+        assert_eq!(
+            produce_set.len(),
+            PRODUCE.len(),
+            "PRODUCE list contains duplicates"
+        );
+        assert_eq!(
+            animals_set.len(),
+            ANIMALS.len(),
+            "ANIMALS list contains duplicates"
         );
 
-        let overlap: Vec<&str> = adj_set.intersection(&noun_set).copied().collect();
+        let adj_obj_overlap: Vec<&str> = adj_set.intersection(&obj_set).copied().collect();
         assert!(
-            overlap.is_empty(),
-            "words appear in both lists: {overlap:?}"
+            adj_obj_overlap.is_empty(),
+            "words appear in both ADJECTIVES and OBJECTS: {adj_obj_overlap:?}"
+        );
+
+        let adj_produce_overlap: Vec<&str> = adj_set.intersection(&produce_set).copied().collect();
+        assert!(
+            adj_produce_overlap.is_empty(),
+            "words appear in both ADJECTIVES and PRODUCE: {adj_produce_overlap:?}"
+        );
+
+        let adj_animals_overlap: Vec<&str> = adj_set.intersection(&animals_set).copied().collect();
+        assert!(
+            adj_animals_overlap.is_empty(),
+            "words appear in both ADJECTIVES and ANIMALS: {adj_animals_overlap:?}"
         );
     }
 }
