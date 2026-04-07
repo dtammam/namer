@@ -11,7 +11,7 @@
 
 ## What is namer?
 
-namer is a command-line tool that generates random two-word names by combining an adjective with a noun. By default, output is ALL CAPS with no separator — great for project names, environment identifiers, or anywhere you need a quick, human-readable handle. You can configure both the casing and the separator between words using flags.
+namer is a command-line tool that generates random two-word names by combining an adjective with a noun. By default, output is ALL CAPS with no separator — great for project names, environment identifiers, or anywhere you need a quick, human-readable handle. You can configure the casing, the separator, and the noun category (`objects`, `produce`, or `animals`) using flags.
 
 ## Installation
 
@@ -107,6 +107,26 @@ $ namer --lower --delimiter _
 bold_falcon
 ```
 
+**`--things`** — choose which noun category to draw from (default: `objects`):
+
+```console
+$ namer --things objects
+SORDIDENVELOPE
+
+$ namer --things produce
+PALEGALANGAL
+
+$ namer --things animals
+SACREDTAIPAN
+```
+
+**Combining `--things` with other flags** — lowercase produce name with a hyphen separator:
+
+```console
+$ namer --things produce --lower --delimiter -
+filthy-garlic
+```
+
 **`--help`** — full flag reference:
 
 ```console
@@ -130,6 +150,16 @@ Options:
           Number of names to generate (1-1000)
 
           [default: 1]
+
+      --things <THINGS>
+          Which noun category to draw from
+
+          Possible values:
+          - objects: Everyday objects (default)
+          - produce: Fruits, vegetables, and other produce
+          - animals: Animals from around the world
+
+          [default: objects]
 
   -h, --help
           Print help (see a summary with '-h')

@@ -3,7 +3,7 @@
   "feature_name": "Refactor word lists and add clap-driven 'things' categories",
   "stage": "implementation",
   "created_at": "2026-04-07",
-  "updated_at": "2026-04-07T00:12",
+  "updated_at": "2026-04-07T00:13",
   "tasks": [
     {
       "id": 1,
@@ -55,7 +55,7 @@
       "definition_of_done": "README shows --things usage. ARCHITECTURE.md reflects new module structure. RELIABILITY.md references updated correctly. npx markdownlint-cli2 passes on all changed files."
     }
   ],
-  "completed_tasks": [1, 2, 3, 4, 5],
+  "completed_tasks": [1, 2, 3, 4, 5, 6],
   "artifacts": {
     "requirements": "docs/exec-plans/active/2026-04-07-refactor-word-lists-things-categories.md",
     "design": "docs/exec-plans/active/2026-04-07-refactor-word-lists-things-categories.md",
@@ -77,6 +77,8 @@
     { "timestamp": "2026-04-07 00:11", "stage": "implementation", "note": "Task 4 completed. Replaced objects.rs with curated ~240 objects list, removed NOUNS constant, cross-checked against adjectives and removed overlaps. All quality gates passing." },
     { "timestamp": "2026-04-07 00:11", "stage": "implementation", "note": "Task 5 started: Update unit tests for new word list structure." },
     { "timestamp": "2026-04-07 00:12", "stage": "implementation", "note": "Task 5 completed. Removed exact-777-count test, added range-based size assertions for all four lists, extended duplicate/overlap validation to all categories. All quality gates passing." },
-    { "timestamp": "2026-04-07 00:12", "stage": "implementation", "note": "Task 6 started: Add integration tests for --things flag." }
+    { "timestamp": "2026-04-07 00:12", "stage": "implementation", "note": "Task 6 started: Add integration tests for --things flag." },
+    { "timestamp": "2026-04-07 00:13", "stage": "implementation", "note": "Task 6 completed. Integration tests for --things flag added covering each category, default behavior, invalid values, --help documentation, and combination tests with --lower/--delimiter. All quality gates passing." },
+    { "timestamp": "2026-04-07 00:13", "stage": "implementation", "note": "Task 7 started: Update README and docs." }
   ]
 }
