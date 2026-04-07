@@ -2,7 +2,39 @@ mod words;
 
 use clap::Parser;
 use rand::Rng;
-use words::{ADJECTIVES, NOUNS};
+use words::ADJECTIVES;
+
+/// Noun category for name generation.
+#[derive(Clone, Copy, clap::ValueEnum)]
+pub enum ThingCategory {
+    /// Everyday objects (default).
+    Objects,
+    /// Fruits, vegetables, and other produce.
+    Produce,
+    /// Animals from around the world.
+    Animals,
+}
+
+impl ThingCategory {
+    /// Returns the noun word list for this category.
+    pub fn nouns(&self) -> &'static [&'static str] {
+        match self {
+            Self::Objects => words::OBJECTS,
+            Self::Produce => words::PRODUCE,
+            Self::Animals => words::ANIMALS,
+        }
+    }
+}
+
+impl std::fmt::Display for ThingCategory {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Objects => write!(f, "objects"),
+            Self::Produce => write!(f, "produce"),
+            Self::Animals => write!(f, "animals"),
+        }
+    }
+}
 
 /// Generates a random name from a curated list of adjectives and nouns.
 ///
@@ -22,6 +54,10 @@ struct Cli {
     /// Number of names to generate (1-1000).
     #[arg(long, default_value_t = 1, value_parser = clap::value_parser!(u32).range(1..=1000))]
     number: u32,
+
+    /// Which noun category to draw from.
+    #[arg(long, default_value_t = ThingCategory::Objects, value_enum)]
+    things: ThingCategory,
 }
 
 /// The two components of a generated name: an adjective and a noun.
@@ -37,13 +73,14 @@ pub enum Casing {
     Lower,
 }
 
-/// Picks one random adjective and one random noun.
+/// Picks one random adjective and one random noun from the provided slice.
 ///
 /// The returned parts are in the original lowercase form from the word lists.
 /// No formatting is applied.
-pub fn generate_name(rng: &mut impl Rng) -> NameParts {
+pub fn generate_name(rng: &mut impl Rng, nouns: &[&str]) -> NameParts {
+    debug_assert!(!nouns.is_empty());
     let adjective = ADJECTIVES[rng.random_range(0..ADJECTIVES.len())];
-    let noun = NOUNS[rng.random_range(0..NOUNS.len())];
+    let noun = nouns[rng.random_range(0..nouns.len())];
     NameParts {
         adjective: adjective.to_string(),
         noun: noun.to_string(),
@@ -69,23 +106,25 @@ fn main() {
     } else {
         Casing::Upper
     };
+    let nouns = cli.things.nouns();
     for _ in 0..cli.number {
-        let parts = generate_name(&mut rng);
+        let parts = generate_name(&mut rng, nouns);
         println!("{}", format_name(&parts, casing, &cli.delimiter));
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{Casing, NameParts, format_name, generate_name};
-    use crate::words::{ADJECTIVES, NOUNS};
+    use super::{Casing, NameParts, ThingCategory, format_name, generate_name};
+    use crate::words;
+    use crate::words::{ADJECTIVES, ANIMALS, OBJECTS, PRODUCE};
     use rand::{SeedableRng, rngs::SmallRng};
     use std::collections::HashSet;
 
     #[test]
     fn generate_name_returns_lowercase_adjective_and_noun() {
         let mut rng = SmallRng::seed_from_u64(42);
-        let parts = generate_name(&mut rng);
+        let parts = generate_name(&mut rng, words::OBJECTS);
         assert!(
             !parts.adjective.is_empty() && parts.adjective.chars().all(|c| c.is_ascii_lowercase())
         );
@@ -95,17 +134,32 @@ mod tests {
     #[test]
     fn generate_name_picks_from_word_lists() {
         let mut rng = SmallRng::seed_from_u64(42);
-        let parts = generate_name(&mut rng);
+        let parts = generate_name(&mut rng, words::OBJECTS);
         assert!(ADJECTIVES.contains(&parts.adjective.as_str()));
-        assert!(NOUNS.contains(&parts.noun.as_str()));
+        assert!(words::OBJECTS.contains(&parts.noun.as_str()));
     }
 
     #[test]
     fn generate_name_is_deterministic_for_same_seed() {
-        let a = generate_name(&mut SmallRng::seed_from_u64(42));
-        let b = generate_name(&mut SmallRng::seed_from_u64(42));
+        let a = generate_name(&mut SmallRng::seed_from_u64(42), words::OBJECTS);
+        let b = generate_name(&mut SmallRng::seed_from_u64(42), words::OBJECTS);
         assert_eq!(a.adjective, b.adjective);
         assert_eq!(a.noun, b.noun);
+    }
+
+    #[test]
+    fn thing_category_objects_returns_objects_list() {
+        assert_eq!(ThingCategory::Objects.nouns(), words::OBJECTS);
+    }
+
+    #[test]
+    fn thing_category_produce_returns_produce_list() {
+        assert_eq!(ThingCategory::Produce.nouns(), words::PRODUCE);
+    }
+
+    #[test]
+    fn thing_category_animals_returns_animals_list() {
+        assert_eq!(ThingCategory::Animals.nouns(), words::ANIMALS);
     }
 
     fn parts(adj: &str, noun: &str) -> NameParts {
@@ -172,9 +226,27 @@ mod tests {
     }
 
     #[test]
-    fn word_lists_contain_exactly_777_entries_each() {
-        assert_eq!(ADJECTIVES.len(), 777);
-        assert_eq!(NOUNS.len(), 777);
+    fn word_lists_fall_within_expected_size_ranges() {
+        assert!(
+            (300..=500).contains(&ADJECTIVES.len()),
+            "ADJECTIVES has {} entries, expected 300–500",
+            ADJECTIVES.len()
+        );
+        assert!(
+            (200..=300).contains(&OBJECTS.len()),
+            "OBJECTS has {} entries, expected 200–300",
+            OBJECTS.len()
+        );
+        assert!(
+            (150..=250).contains(&PRODUCE.len()),
+            "PRODUCE has {} entries, expected 150–250",
+            PRODUCE.len()
+        );
+        assert!(
+            (200..=300).contains(&ANIMALS.len()),
+            "ANIMALS has {} entries, expected 200–300",
+            ANIMALS.len()
+        );
     }
 
     #[test]
@@ -185,10 +257,22 @@ mod tests {
                 "adjective {word:?} contains non-lowercase-ASCII or is empty"
             );
         }
-        for word in NOUNS {
+        for word in OBJECTS {
             assert!(
                 !word.is_empty() && word.bytes().all(|b| b.is_ascii_lowercase()),
-                "noun {word:?} contains non-lowercase-ASCII or is empty"
+                "objects entry {word:?} contains non-lowercase-ASCII or is empty"
+            );
+        }
+        for word in PRODUCE {
+            assert!(
+                !word.is_empty() && word.bytes().all(|b| b.is_ascii_lowercase()),
+                "produce entry {word:?} contains non-lowercase-ASCII or is empty"
+            );
+        }
+        for word in ANIMALS {
+            assert!(
+                !word.is_empty() && word.bytes().all(|b| b.is_ascii_lowercase()),
+                "animals entry {word:?} contains non-lowercase-ASCII or is empty"
             );
         }
     }
@@ -196,23 +280,73 @@ mod tests {
     #[test]
     fn word_lists_have_no_duplicates_and_no_cross_list_overlap() {
         let adj_set: HashSet<&str> = ADJECTIVES.iter().copied().collect();
-        let noun_set: HashSet<&str> = NOUNS.iter().copied().collect();
+        let obj_set: HashSet<&str> = OBJECTS.iter().copied().collect();
+        let produce_set: HashSet<&str> = PRODUCE.iter().copied().collect();
+        let animals_set: HashSet<&str> = ANIMALS.iter().copied().collect();
 
         assert_eq!(
             adj_set.len(),
             ADJECTIVES.len(),
-            "adjectives list contains duplicates"
+            "ADJECTIVES list contains duplicates"
         );
         assert_eq!(
-            noun_set.len(),
-            NOUNS.len(),
-            "nouns list contains duplicates"
+            obj_set.len(),
+            OBJECTS.len(),
+            "OBJECTS list contains duplicates"
+        );
+        assert_eq!(
+            produce_set.len(),
+            PRODUCE.len(),
+            "PRODUCE list contains duplicates"
+        );
+        assert_eq!(
+            animals_set.len(),
+            ANIMALS.len(),
+            "ANIMALS list contains duplicates"
         );
 
-        let overlap: Vec<&str> = adj_set.intersection(&noun_set).copied().collect();
+        let adj_obj_overlap: Vec<&str> = adj_set.intersection(&obj_set).copied().collect();
         assert!(
-            overlap.is_empty(),
-            "words appear in both lists: {overlap:?}"
+            adj_obj_overlap.is_empty(),
+            "words appear in both ADJECTIVES and OBJECTS: {adj_obj_overlap:?}"
+        );
+
+        let adj_produce_overlap: Vec<&str> = adj_set.intersection(&produce_set).copied().collect();
+        assert!(
+            adj_produce_overlap.is_empty(),
+            "words appear in both ADJECTIVES and PRODUCE: {adj_produce_overlap:?}"
+        );
+
+        let adj_animals_overlap: Vec<&str> = adj_set.intersection(&animals_set).copied().collect();
+        assert!(
+            adj_animals_overlap.is_empty(),
+            "words appear in both ADJECTIVES and ANIMALS: {adj_animals_overlap:?}"
+        );
+    }
+
+    #[test]
+    fn noun_categories_have_no_cross_list_overlap() {
+        let obj_set: HashSet<&str> = OBJECTS.iter().copied().collect();
+        let produce_set: HashSet<&str> = PRODUCE.iter().copied().collect();
+        let animals_set: HashSet<&str> = ANIMALS.iter().copied().collect();
+
+        let obj_produce_overlap: Vec<&str> = obj_set.intersection(&produce_set).copied().collect();
+        assert!(
+            obj_produce_overlap.is_empty(),
+            "words appear in both OBJECTS and PRODUCE: {obj_produce_overlap:?}"
+        );
+
+        let obj_animals_overlap: Vec<&str> = obj_set.intersection(&animals_set).copied().collect();
+        assert!(
+            obj_animals_overlap.is_empty(),
+            "words appear in both OBJECTS and ANIMALS: {obj_animals_overlap:?}"
+        );
+
+        let produce_animals_overlap: Vec<&str> =
+            produce_set.intersection(&animals_set).copied().collect();
+        assert!(
+            produce_animals_overlap.is_empty(),
+            "words appear in both PRODUCE and ANIMALS: {produce_animals_overlap:?}"
         );
     }
 }

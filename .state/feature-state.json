@@ -1,17 +1,93 @@
 {
-  "feature_id": "mobile-workflow-agent-scripts",
-  "feature_name": "CLI-invocable specialist agent scripts + slash commands for mobile workflow",
-  "stage": "bootstrap",
-  "created_at": "2026-03-29",
-  "updated_at": "2026-03-29",
-  "tasks": [],
-  "completed_tasks": [],
+  "feature_id": "refactor-word-lists-things-categories",
+  "feature_name": "Refactor word lists and add clap-driven 'things' categories",
+  "stage": "done",
+  "created_at": "2026-04-07",
+  "updated_at": "2026-04-07T00:22",
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Convert src/words.rs to src/words/ directory module and replace ADJECTIVES",
+      "description": "Delete src/words.rs. Create src/words/mod.rs that declares submodules and re-exports constants. Create src/words/adjectives.rs with the new curated ADJECTIVES list (~400 entries, user-provided). Temporarily keep NOUNS available by creating src/words/objects.rs with the current NOUNS entries re-exported as both OBJECTS and NOUNS (so existing code compiles). Update mod.rs re-exports accordingly. All existing tests must still pass after this task.",
+      "files": ["src/words.rs", "src/words/mod.rs", "src/words/adjectives.rs", "src/words/objects.rs"],
+      "definition_of_done": "src/words/ directory exists with mod.rs, adjectives.rs, objects.rs. ADJECTIVES contains ~400 user-provided entries. NOUNS still exported for backward compat. cargo test passes. cargo clippy passes. cargo fmt passes."
+    },
+    {
+      "id": 2,
+      "title": "Add ThingCategory enum, --things CLI arg, and update generate_name signature",
+      "description": "In src/main.rs: add ThingCategory enum (Objects, Produce, Animals) deriving clap::ValueEnum with doc comments. Add nouns() method on ThingCategory that returns the noun slice. Add 'things: ThingCategory' field to Cli struct with default Objects. Change generate_name to accept nouns: &[&str] parameter. Update main() to resolve cli.things.nouns() and pass it. Remove the NOUNS import (use ThingCategory::nouns() instead). Remove backward-compat NOUNS re-export from words/mod.rs. Update existing unit tests in src/main.rs to pass a noun slice to generate_name.",
+      "files": ["src/main.rs", "src/words/mod.rs"],
+      "definition_of_done": "ThingCategory enum exists with ValueEnum derive. --things arg on Cli with default Objects. generate_name accepts nouns slice. Existing tests updated and passing. cargo clippy and cargo fmt pass."
+    },
+    {
+      "id": 3,
+      "title": "Add produce and animals word lists",
+      "description": "Create src/words/produce.rs with the user-provided PRODUCE list (~200 entries). Create src/words/animals.rs with the user-provided ANIMALS list (~250 entries). Register both submodules in src/words/mod.rs and add re-exports. The user will provide the exact word lists for both files.",
+      "files": ["src/words/produce.rs", "src/words/animals.rs", "src/words/mod.rs"],
+      "definition_of_done": "PRODUCE and ANIMALS constants exist and are accessible via words::PRODUCE and words::ANIMALS. ThingCategory::nouns() correctly resolves Produce and Animals variants. cargo build succeeds."
+    },
+    {
+      "id": 4,
+      "title": "Replace objects word list with user-provided curated list",
+      "description": "Replace the contents of src/words/objects.rs with the user-provided OBJECTS list (~240 entries). Remove any leftover NOUNS re-export if still present. The user will provide the exact word list.",
+      "files": ["src/words/objects.rs"],
+      "definition_of_done": "OBJECTS contains ~240 user-provided entries. No NOUNS constant exists anywhere. cargo build succeeds."
+    },
+    {
+      "id": 5,
+      "title": "Update unit tests for new word list structure",
+      "description": "In src/main.rs tests: (1) Remove word_lists_contain_exactly_777_entries_each test. (2) Update word_list_entries_are_non_empty_lowercase_ascii_alphabetic to cover all four lists (ADJECTIVES, OBJECTS, PRODUCE, ANIMALS). (3) Update word_lists_have_no_duplicates_and_no_cross_list_overlap to check all four lists internally and verify no word appears in both adjectives and any noun category. (4) Add range-based size assertion tests: ADJECTIVES 350-500, OBJECTS 200-300, PRODUCE 150-250, ANIMALS 200-300.",
+      "files": ["src/main.rs"],
+      "definition_of_done": "Exact-count test removed. All four lists validated for format, duplicates, cross-list overlap, and size ranges. cargo test passes."
+    },
+    {
+      "id": 6,
+      "title": "Add integration tests for --things flag",
+      "description": "In tests/cli.rs: (1) Test --things objects produces output (default behavior). (2) Test --things produce produces output. (3) Test --things animals produces output. (4) Test --things invalid exits non-zero. (5) Test --help mentions --things with accepted values. (6) Add combination tests: --things produce --lower --delimiter - (and at least one combo per category).",
+      "files": ["tests/cli.rs"],
+      "definition_of_done": "All new integration tests pass. Each category tested standalone and in combination with --lower/--delimiter. Invalid value test confirms non-zero exit. --help test confirms --things is documented."
+    },
+    {
+      "id": 7,
+      "title": "Update README and docs",
+      "description": "Update README.md usage examples to show --things flag with each category. Update docs/ARCHITECTURE.md to reflect the new words/ directory module structure and ThingCategory enum. Update docs/RELIABILITY.md to reference category-specific noun lists instead of single NOUNS array.",
+      "files": ["README.md", "docs/ARCHITECTURE.md", "docs/RELIABILITY.md"],
+      "definition_of_done": "README shows --things usage. ARCHITECTURE.md reflects new module structure. RELIABILITY.md references updated correctly. npx markdownlint-cli2 passes on all changed files."
+    }
+  ],
+  "completed_tasks": [1, 2, 3, 4, 5, 6, 7],
   "artifacts": {
-    "requirements": null,
-    "design": null,
-    "exec_plan": null
+    "requirements": "docs/exec-plans/completed/2026-04-07-refactor-word-lists-things-categories.md",
+    "design": "docs/exec-plans/completed/2026-04-07-refactor-word-lists-things-categories.md",
+    "exec_plan": "docs/exec-plans/completed/2026-04-07-refactor-word-lists-things-categories.md"
   },
   "history": [
-    { "timestamp": "2026-03-29 00:00", "stage": "bootstrap", "note": "Feature initiated: CLI-invocable specialist agent scripts and slash commands for mobile workflow via Happy Coder. Parallel invocation path alongside existing VS Code tasks." }
+    { "timestamp": "2026-04-07 00:00", "stage": "bootstrap", "note": "Feature initiated: Refactor word lists (new curated adjectives ~400, objects ~240), add clap-driven 'things' argument with categories (objects, produce, animals), remove exact word-count tests." },
+    { "timestamp": "2026-04-07 00:01", "stage": "discovery", "note": "Moved to discovery. PM to gather requirements and write exec plan." },
+    { "timestamp": "2026-04-07 00:02", "stage": "discovery", "note": "PM completed Discovery. Exec plan written to docs/exec-plans/active/2026-04-07-refactor-word-lists-things-categories.md." },
+    { "timestamp": "2026-04-07 00:03", "stage": "design", "note": "Moved to design. PE to produce technical design in exec plan." },
+    { "timestamp": "2026-04-07 00:04", "stage": "tasks", "note": "Moved to tasks. EM broke design into 7 discrete implementation tasks." },
+    { "timestamp": "2026-04-07 00:05", "stage": "implementation", "note": "Implementation started. Task 1: Convert src/words.rs to src/words/ directory module and replace ADJECTIVES." },
+    { "timestamp": "2026-04-07 00:06", "stage": "implementation", "note": "Task 1 completed. words/ module created with adjectives.rs (316 entries) and objects.rs (backward-compat NOUNS export). All quality gates passing." },
+    { "timestamp": "2026-04-07 00:07", "stage": "implementation", "note": "Task 2 started: Add ThingCategory enum, --things CLI arg, and update generate_name signature." },
+    { "timestamp": "2026-04-07 00:08", "stage": "implementation", "note": "Task 2 completed. ThingCategory enum with clap::ValueEnum, --things CLI arg, generate_name accepts nouns slice, NOUNS backward-compat removed. All quality gates passing." },
+    { "timestamp": "2026-04-07 00:08", "stage": "implementation", "note": "Task 3 started: Add produce and animals word lists." },
+    { "timestamp": "2026-04-07 00:09", "stage": "implementation", "note": "Task 3 completed. Created produce.rs and animals.rs, wired up mod.rs re-exports, updated ThingCategory::nouns() to return real slices. All quality gates passing." },
+    { "timestamp": "2026-04-07 00:10", "stage": "implementation", "note": "Task 4 started: Replace objects word list with user-provided curated list." },
+    { "timestamp": "2026-04-07 00:11", "stage": "implementation", "note": "Task 4 completed. Replaced objects.rs with curated ~240 objects list, removed NOUNS constant, cross-checked against adjectives and removed overlaps. All quality gates passing." },
+    { "timestamp": "2026-04-07 00:11", "stage": "implementation", "note": "Task 5 started: Update unit tests for new word list structure." },
+    { "timestamp": "2026-04-07 00:12", "stage": "implementation", "note": "Task 5 completed. Removed exact-777-count test, added range-based size assertions for all four lists, extended duplicate/overlap validation to all categories. All quality gates passing." },
+    { "timestamp": "2026-04-07 00:12", "stage": "implementation", "note": "Task 6 started: Add integration tests for --things flag." },
+    { "timestamp": "2026-04-07 00:13", "stage": "implementation", "note": "Task 6 completed. Integration tests for --things flag added covering each category, default behavior, invalid values, --help documentation, and combination tests with --lower/--delimiter. All quality gates passing." },
+    { "timestamp": "2026-04-07 00:13", "stage": "implementation", "note": "Task 7 started: Update README and docs." },
+    { "timestamp": "2026-04-07 00:14", "stage": "implementation", "note": "Task 7 completed. Updated README.md with --things examples, updated ARCHITECTURE.md and RELIABILITY.md. All quality gates passing." },
+    { "timestamp": "2026-04-07 00:15", "stage": "review", "note": "All 7 tasks complete. Moving to code review before acceptance." },
+    { "timestamp": "2026-04-07 00:16", "stage": "implementation", "note": "QA returned REQUEST CHANGES. Moving back to implementation to fix 6 issues: noun overlap between OBJECTS/ANIMALS, tautological unit tests, default_value vs default_value_t, ADJECTIVES size range tightening, integration test assertion strengthening, debug_assert in generate_name." },
+    { "timestamp": "2026-04-07 00:17", "stage": "review", "note": "Re-review after fixes. QA to verify all 6 previous issues resolved plus check for new issues in fix commit." },
+    { "timestamp": "2026-04-07 00:18", "stage": "verification", "note": "Moving to verification. Build specialist to run all quality gates." },
+    { "timestamp": "2026-04-07 00:19", "stage": "acceptance", "note": "All 7 tasks complete and verified. Moving to acceptance. PM to validate every acceptance criterion." },
+    { "timestamp": "2026-04-07 00:20", "stage": "implementation", "note": "Acceptance found ADJECTIVES size test mismatch. User revised acceptance criterion minimum from 350 to 300. Moving back to implementation to update test assertion and exec plan." },
+    { "timestamp": "2026-04-07 00:21", "stage": "acceptance", "note": "Re-run acceptance after ADJECTIVES range fix (300-500). All 7 tasks complete. PM to validate every acceptance criterion." },
+    { "timestamp": "2026-04-07 00:22", "stage": "done", "note": "Feature complete. All 7 tasks implemented, reviewed, verified, and accepted. Exec plan archived to docs/exec-plans/completed/." }
   ]
 }
