@@ -1,9 +1,9 @@
 {
   "feature_id": "refactor-word-lists-things-categories",
   "feature_name": "Refactor word lists and add clap-driven 'things' categories",
-  "stage": "review",
+  "stage": "acceptance",
   "created_at": "2026-04-07",
-  "updated_at": "2026-04-07T00:17",
+  "updated_at": "2026-04-07T00:21",
   "tasks": [
     {
       "id": 1,
@@ -82,6 +82,11 @@
     { "timestamp": "2026-04-07 00:13", "stage": "implementation", "note": "Task 7 started: Update README and docs." },
     { "timestamp": "2026-04-07 00:14", "stage": "implementation", "note": "Task 7 completed. Updated README.md with --things examples, updated ARCHITECTURE.md and RELIABILITY.md. All quality gates passing." },
     { "timestamp": "2026-04-07 00:15", "stage": "review", "note": "All 7 tasks complete. Moving to code review before acceptance." },
-    { "timestamp": "2026-04-07 00:16", "stage": "implementation", "note": "QA returned REQUEST CHANGES. Moving back to implementation to fix 6 issues: noun overlap between OBJECTS/ANIMALS, tautological unit tests, default_value vs default_value_t, ADJECTIVES size range tightening, integration test assertion strengthening, debug_assert in generate_name." }
+    { "timestamp": "2026-04-07 00:16", "stage": "implementation", "note": "QA returned REQUEST CHANGES. Moving back to implementation to fix 6 issues: noun overlap between OBJECTS/ANIMALS, tautological unit tests, default_value vs default_value_t, ADJECTIVES size range tightening, integration test assertion strengthening, debug_assert in generate_name." },
+    { "timestamp": "2026-04-07 00:17", "stage": "review", "note": "Re-review after fixes. QA to verify all 6 previous issues resolved plus check for new issues in fix commit." },
+    { "timestamp": "2026-04-07 00:18", "stage": "verification", "note": "Moving to verification. Build specialist to run all quality gates." },
+    { "timestamp": "2026-04-07 00:19", "stage": "acceptance", "note": "All 7 tasks complete and verified. Moving to acceptance. PM to validate every acceptance criterion." },
+    { "timestamp": "2026-04-07 00:20", "stage": "implementation", "note": "Acceptance found ADJECTIVES size test mismatch. User revised acceptance criterion minimum from 350 to 300. Moving back to implementation to update test assertion and exec plan." },
+    { "timestamp": "2026-04-07 00:21", "stage": "acceptance", "note": "Re-run acceptance after ADJECTIVES range fix (300-500). All 7 tasks complete. PM to validate every acceptance criterion." }
   ]
 }

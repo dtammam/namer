@@ -66,7 +66,7 @@ name generation.
 - [ ] Each word list (adjectives, objects, produce, animals) contains only
       non-empty, lowercase ASCII-alphabetic entries with no duplicates within the
       list. Verified by unit tests.
-- [ ] The adjectives list has at least 350 and no more than 500 entries.
+- [ ] The adjectives list has at least 300 and no more than 500 entries.
 - [ ] The objects list has at least 200 and no more than 300 entries.
 - [ ] The produce list has at least 150 and no more than 250 entries.
 - [ ] The animals list has at least 200 and no more than 300 entries.
@@ -373,7 +373,7 @@ test. (2) Update `word_list_entries_are_non_empty_lowercase_ascii_alphabetic` to
 cover all four lists (`ADJECTIVES`, `OBJECTS`, `PRODUCE`, `ANIMALS`). (3) Update
 `word_lists_have_no_duplicates_and_no_cross_list_overlap` to check all four
 lists internally and verify no word appears in both adjectives and any noun
-category. (4) Add range-based size assertion tests: ADJECTIVES 350-500, OBJECTS
+category. (4) Add range-based size assertion tests: ADJECTIVES 300-500, OBJECTS
 200-300, PRODUCE 150-250, ANIMALS 200-300.
 
 **Files:** `src/main.rs`

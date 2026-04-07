@@ -228,8 +228,8 @@ mod tests {
     #[test]
     fn word_lists_fall_within_expected_size_ranges() {
         assert!(
-            (300..=350).contains(&ADJECTIVES.len()),
-            "ADJECTIVES has {} entries, expected 300–350",
+            (300..=500).contains(&ADJECTIVES.len()),
+            "ADJECTIVES has {} entries, expected 300–500",
             ADJECTIVES.len()
         );
         assert!(
