@@ -3,7 +3,7 @@
 > Generate a random, memorable name in an instant — ALL CAPS by default, configurable to your needs.
 
 <p align="center">
-  <img src="assets/logo/logo-256.png" alt="namer logo" width="128">
+  <img src="assets/images/example.png" alt="example usage of the app">
 </p>
 
 [![CI](https://github.com/dtammam/namer/actions/workflows/ci.yml/badge.svg)](https://github.com/dtammam/namer/actions/workflows/ci.yml)
