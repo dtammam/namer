@@ -33,7 +33,7 @@ docs/
     ci.yml             — PR gate: fmt, clippy, test
     release.yml        — Tag-triggered cross-platform release builds (with auto-generated release notes)
 assets/
-  logo/                — App icon/logo files (PNG, optional SVG)
+  images/              — App icon/logo files (PNG, optional SVG)
 .state/                — feature lifecycle state (managed by engineering-manager)
 ```
 
